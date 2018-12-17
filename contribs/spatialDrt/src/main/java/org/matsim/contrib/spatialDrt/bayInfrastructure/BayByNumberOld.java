@@ -15,7 +15,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class BayByNumber {
+public class BayByNumberOld {
     private final TransitStopFacility transitStop;
     private final Id<Link> linkId;
     private final double capacity;
@@ -24,7 +24,7 @@ public class BayByNumber {
     private Queue<Id<Vehicle>> vehicles = new ConcurrentLinkedQueue<>();
     private Queue<Id<Vehicle>> dwellingVehicles = new ConcurrentLinkedQueue<>();
 
-    public BayByNumber(TransitStopFacility transitStop){
+    public BayByNumberOld(TransitStopFacility transitStop){
         this.transitStop = transitStop;
         this.linkId = transitStop.getLinkId();
         if (transitStop.getAttributes().getAttribute("capacity") == null){

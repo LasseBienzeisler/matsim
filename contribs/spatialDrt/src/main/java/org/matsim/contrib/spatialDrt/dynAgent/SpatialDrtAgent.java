@@ -92,7 +92,6 @@ public final class SpatialDrtAgent implements MobsimDriverPassengerAgent {
 					return;
 				}else{
 					events.processEvent(new ActivityEndEvent(now, id, currentLinkId, null, ((DynActivity)oldDynAction).getActivityType()));
-					return;
 				}
 			}
 			events.processEvent(new ActivityStartEvent(now, id, currentLinkId, null, dynActivity.getActivityType()));

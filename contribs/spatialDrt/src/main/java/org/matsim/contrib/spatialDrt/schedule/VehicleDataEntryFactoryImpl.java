@@ -33,6 +33,7 @@ import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedule.ScheduleStatus;
 import org.matsim.contrib.dvrp.tracker.OnlineDriveTaskTracker;
 import org.matsim.contrib.dvrp.util.LinkTimePair;
+import org.matsim.contrib.spatialDrt.eav.DrtChargeTask;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -61,11 +62,11 @@ public class VehicleDataEntryFactoryImpl implements EntryFactory {
 		Schedule schedule = vehicle.getSchedule();
 		@SuppressWarnings("unchecked")
 		List<DrtTask> tasks = (List<DrtTask>)schedule.getTasks();
+		DrtTask currentTask = (DrtTask)schedule.getCurrentTask();
 
 		LinkTimePair start;
 		int nextTaskIdx;
 		if (schedule.getStatus() == ScheduleStatus.STARTED) {
-			DrtTask currentTask = (DrtTask)schedule.getCurrentTask();
 			switch (currentTask.getDrtTaskType()) {
 				case DRIVE:
 					DrtDriveTask driveTask = (DrtDriveTask)currentTask;
@@ -76,21 +77,29 @@ public class VehicleDataEntryFactoryImpl implements EntryFactory {
 					break;
 
 				case STOP:
-					org.matsim.contrib.spatialDrt.schedule.DrtStopTask stopTask = (org.matsim.contrib.spatialDrt.schedule.DrtStopTask)currentTask;
+					DrtStopTask stopTask = (DrtStopTask)currentTask;
 					start = new LinkTimePair(stopTask.getLink(), stopTask.getEndTime());
 					break;
 
 				case STAY:
 					if (currentTask instanceof DrtQueueTask) {
-						DrtStopTask quequeTask = (DrtStopTask) schedule.getTasks().get(currentTask.getTaskIdx() + 1);
-						start = new LinkTimePair(quequeTask.getLink(), quequeTask.getEndTime());
-						currentTask = quequeTask;
-					}else {
+						DrtTask nextTask = (DrtTask) schedule.getTasks().get(currentTask.getTaskIdx() + 1);
+						if (nextTask instanceof  DrtStopTask) {
+							start = new LinkTimePair(((DrtStopTask) nextTask).getLink(), nextTask.getEndTime());
+							currentTask = nextTask;
+						}else if (nextTask instanceof DrtChargeTask) {
+							start = new LinkTimePair(((DrtChargeTask) nextTask).getLink(), nextTask.getEndTime());
+							currentTask = nextTask;
+						}else{
+							throw  new RuntimeException();
+						}
+					}else if (currentTask instanceof DrtChargeTask) {
+						start = new LinkTimePair(((DrtChargeTask) currentTask).getLink(), currentTask.getEndTime());
+					}else{
 						DrtStayTask stayTask = (DrtStayTask) currentTask;
 						start = new LinkTimePair(stayTask.getLink(), currentTime);
 					}
 					break;
-
 				default:
 					throw new RuntimeException();
 			}

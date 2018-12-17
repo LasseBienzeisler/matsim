@@ -85,7 +85,7 @@ public class RoamingStrategy implements ParkingStrategy, MobsimBeforeSimStepList
 
     @Override
     public ParkingStrategy.Strategies getCurrentStrategy(Id<Vehicle> vehicleId) {
-        return Strategies.AlwaysRoaming;
+        return Strategies.alwaysRoaming;
     }
 
     private void calculateProbability(double time) {

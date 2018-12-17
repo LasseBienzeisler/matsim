@@ -15,6 +15,7 @@ import org.matsim.core.utils.collections.Tuple;
 
 import org.matsim.core.utils.io.MatsimXmlWriter;
 import org.matsim.utils.objectattributes.attributable.AttributesXmlWriterDelegate;
+import org.matsim.vehicles.VehicleType;
 
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class ToBeDeletedVehicleGenerator {
     public static void main(String[] args) {
         int numT = 100;
         int numS = 200;
-        int numM = 150;
+        int numM = 100;
         int numL = 50;
         int num = numL + numM + numS + numT;
         Network network = NetworkUtils.createNetwork();
@@ -37,25 +38,25 @@ public class ToBeDeletedVehicleGenerator {
         ArrayList<Id<Link>> links = new ArrayList<>(drtNetwork.getLinks().keySet());
         for (int i =0;i<numT;i++){
             Id<Link> lid = links.get(random.nextInt(links.size()));
-            Vehicle veh = new VehicleImpl(Id.create("drt_1s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 1,0,30*3600, new DynVehicleType());
+            Vehicle veh = new VehicleImpl(Id.create("drt_1s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 1,0,30*3600, DynVehicleType.defaultDynVehicleType(Id.create(1, VehicleType.class)));
             veh.getAttributes().putAttribute("mode","drtaxi");
             newFleet.addVehicle(veh);
         }
         for (int i =0;i<numS;i++){
             Id<Link> lid = links.get(random.nextInt(links.size()));
-            Vehicle veh = new VehicleImpl(Id.create("drt_4s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 4,0,30*3600, new DynVehicleType());
+            Vehicle veh = new VehicleImpl(Id.create("drt_4s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 4,0,30*3600, DynVehicleType.defaultDynVehicleType(Id.create(1, VehicleType.class)));
             veh.getAttributes().putAttribute("mode","drt");
             newFleet.addVehicle(veh);
         }
         for (int i =0;i<numM;i++){
             Id<Link> lid = links.get(random.nextInt(links.size()));
-            Vehicle veh = new VehicleImpl(Id.create("drt_10s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 10,0,30*3600,new DynVehicleType());
+            Vehicle veh = new VehicleImpl(Id.create("drt_10s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 10,0,30*3600, DynVehicleType.defaultDynVehicleType(Id.create(1, VehicleType.class)));
             veh.getAttributes().putAttribute("mode", "drt");
             newFleet.addVehicle(veh);
         }
         for (int i =0;i<numL;i++){
             Id<Link> lid = links.get(random.nextInt(links.size()));
-            Vehicle veh = new VehicleImpl(Id.create("drt_20s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 20,0,30*3600, new DynVehicleType());
+            Vehicle veh = new VehicleImpl(Id.create("drt_20s_" + i, Vehicle.class),drtNetwork.getLinks().get(lid), 20,0,30*3600, DynVehicleType.defaultDynVehicleType(Id.create(1, VehicleType.class)));
             veh.getAttributes().putAttribute("mode","drt");
             newFleet.addVehicle(veh);
         }
@@ -73,7 +74,7 @@ class VehicleWriter extends MatsimXmlWriter {
 
     public void write(String file) {
         openFile(file);
-        writeDoctype("vehicles", "http://matsim.org/files/dtd/dvrp_vehicles_v1.dtd");
+        writeDoctype("vehicles", "/home/biyu/IdeaProjects/NewParking/scenarios/tanjong_pagar/drtvehicles/dvrp_vehicles_v2.dtd");
         writeStartTag("vehicles", Collections.<Tuple<String, String>> emptyList());
         writeVehicles();
         writeEndTag("vehicles");

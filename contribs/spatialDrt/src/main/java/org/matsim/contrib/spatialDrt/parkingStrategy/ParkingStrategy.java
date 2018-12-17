@@ -6,11 +6,11 @@ import org.matsim.contrib.dvrp.data.Vehicle;
 
 public interface ParkingStrategy {
     public enum Strategies{
-        AlwaysRoaming,
-        NoParkingStrategy,
-        ParkingInDepot,
-        ParkingOntheRoad,
-        MixedParking;
+        alwaysRoaming,
+        noParkingStrategy,
+        parkingInDepot,
+        parkingOntheRoad,
+        mixedParking;
     }
 
     public class ParkingLocation {

@@ -34,6 +34,8 @@ import org.matsim.contrib.dynagent.DynAction;
 import org.matsim.contrib.spatialDrt.dwelling.BusStopActivity;
 import org.matsim.contrib.spatialDrt.dynAgent.SpatialDrtAgent;
 import org.matsim.contrib.spatialDrt.dynAgent.VrpAgentLogic;
+import org.matsim.contrib.spatialDrt.eav.ChargingActivity;
+import org.matsim.contrib.spatialDrt.eav.DrtChargeTask;
 import org.matsim.contrib.spatialDrt.passenger.PassengerEngine;
 import org.matsim.contrib.spatialDrt.scheduler.DrtScheduleTimingUpdater;
 import org.matsim.core.mobsim.framework.MobsimTimer;
@@ -45,6 +47,7 @@ public class DrtActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String DRT_STAY_NAME = "DrtStay";
 	public final static String DRT_STOP_NAME = "DrtBusStop";
 	public static final String DRT_QUEUE_NAME = "DrtQueue";
+	public static final String DRT_CHARGE_NAME = "DrtCharge";
 	private final DrtScheduleTimingUpdater drtScheduler;
 	private final PassengerEngine passengerEngine;
 	private final VrpLegFactory legFactory;
@@ -75,6 +78,9 @@ public class DrtActionCreator implements VrpAgentLogic.DynActionCreator {
 			case STAY:
 				if (task instanceof DrtQueueTask) {
 					return new VrpActivity(DRT_QUEUE_NAME, (StayTask) task);
+				}
+				if (task instanceof DrtChargeTask){
+					return new ChargingActivity(DRT_CHARGE_NAME, (DrtChargeTask) task, ((DrtChargeTask) task).getCharger(), vehicle);
 				}
 				return new VrpActivity(DRT_STAY_NAME, (StayTask) task);
 			default:

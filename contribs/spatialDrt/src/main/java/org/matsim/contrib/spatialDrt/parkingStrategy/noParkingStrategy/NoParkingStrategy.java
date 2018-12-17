@@ -18,7 +18,7 @@ public class NoParkingStrategy implements ParkingStrategy {
 
     @Override
     public ParkingStrategy.Strategies getCurrentStrategy(Id<Vehicle> vehicleId) {
-        return Strategies.NoParkingStrategy;
+        return Strategies.noParkingStrategy;
     }
 
 }

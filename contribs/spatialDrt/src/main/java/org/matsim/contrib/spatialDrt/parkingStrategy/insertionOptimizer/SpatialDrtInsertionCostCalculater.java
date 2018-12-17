@@ -37,6 +37,7 @@ import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedules;
 import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
 import org.matsim.contrib.dvrp.schedule.Task;
+import org.matsim.contrib.spatialDrt.eav.DischargingRate;
 import org.matsim.contrib.spatialDrt.schedule.DrtQueueTask;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
 import org.matsim.core.mobsim.framework.MobsimTimer;
@@ -102,7 +103,24 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
 
         boolean constraintsSatisfied = areConstraintsSatisfied(drtRequest, vEntry, insertion, pickupDetourTimeLoss,
                 totalTimeLoss);
-        return constraintsSatisfied ? totalTimeLoss : INFEASIBLE_SOLUTION_COST;
+        return constraintsSatisfied ? totalTimeLoss + calcSoftConstraintPenalty(drtRequest, vEntry, insertion, pickupDetourTimeLoss) : INFEASIBLE_SOLUTION_COST;
+    }
+
+    private double calcSoftConstraintPenalty(DrtRequest drtRequest, VehicleData.Entry vEntry,
+                                             InsertionWithDetourTimes insertion, double pickupDetourTimeLoss) {
+        final int pickupIdx = insertion.getPickupIdx();
+        final int dropoffIdx = insertion.getDropoffIdx();
+
+        double driveToPickupStartTime = getDriveToInsertionStartTime(vEntry, pickupIdx);
+        double pickupEndTime = driveToPickupStartTime + insertion.getTimeToPickup() + vEntry.vehicle.getCapacity() * (((VehicleImpl)vEntry.vehicle).getVehicleType().getAccessTime() + ((VehicleImpl)vEntry.vehicle).getVehicleType().getEgressTime());
+        double dropoffStartTime = pickupIdx == dropoffIdx ?
+                pickupEndTime + insertion.getTimeFromPickup() :
+                vEntry.stops.get(dropoffIdx - 1).task.getEndTime() + pickupDetourTimeLoss
+                        + insertion.getTimeToDropoff();
+
+        double maxWaitTimeViolation = Math.max(0, pickupEndTime - drtRequest.getLatestStartTime());
+        double maxTravelTimeViolation = Math.max(0, dropoffStartTime - drtRequest.getLatestArrivalTime());
+        return penaltyCalculator.calcPenalty(maxWaitTimeViolation, maxTravelTimeViolation);
     }
 
     private double calculatePickupDetourTimeLoss(DrtRequest drtRequest, VehicleData.Entry vEntry,
@@ -175,19 +193,47 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
             return false;
         }
 
-        Task currentTask = vEntry.vehicle.getSchedule().getCurrentTask();
-        if (currentTask instanceof DrtStayTask){
-            return true; // idle vehicles always satisfy the contraints
+            Task currentTask = vEntry.vehicle.getSchedule().getCurrentTask();
+            //synchronized (drive) {
+        if (insertion instanceof InsertionWithPathData) {
+            Double drive = 0.0;
+            if (currentTask instanceof StayTaskImpl) {
+                drive = drive + ((StayTaskImpl) currentTask).getLink().getLength();
+            }
+            for (int i = vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx(); i < vEntry.vehicle.getSchedule().getTasks().size(); i++) {
+                Task drtTask = vEntry.vehicle.getSchedule().getTasks().get(i);
+                if (drtTask instanceof DrtDriveTask) {
+                    drive = drive + VrpPaths.calcDistance(((DrtDriveTask) drtTask).getPath());
+                }
+            }
+            drive = drive + ((InsertionWithPathData) insertion).getPathToPickup().getPathDistance() + ((InsertionWithPathData) insertion).getPathFromPickup().getPathDistance() +
+                    (insertion.getDropoffIdx() == insertion.getPickupIdx() ? 0 : ((InsertionWithPathData) insertion).getPathToDropoff().getPathDistance()) +
+                    (insertion.getDropoffIdx() == vEntry.stops.size() ? 0 : ((InsertionWithPathData) insertion).getPathFromDropoff().getPathDistance());
+            //}
+            double estimatedBatteryAfterAccept = (((VehicleImpl) vEntry.vehicle).getBattery() - DischargingRate.calculateDischargeByDistance(drive, ((VehicleImpl) vEntry.vehicle).getVehicleType().getId()));
+            if (estimatedBatteryAfterAccept <= DischargingRate.getMinAccepted(((VehicleImpl) vEntry.vehicle).getVehicleType().getId())) {
+                return false;
+            }
         }
-        Task nextTask = vEntry.vehicle.getSchedule().getTasks().get(vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx() + 1);
-        if (currentTask instanceof DrtDriveTask && nextTask instanceof DrtStayTask){
-            return true; // vehicles coming back to depot always satisfy the contraints
+        boolean test = false;
+//        if (currentTask instanceof DrtStayTask && currentTask.equals(lastTask)){
+////            return true; // idle vehicles always satisfy the contraints
+//        }
+        if (!currentTask.equals(lastTask)) {
+            Task nextTask = vEntry.vehicle.getSchedule().getTasks().get(vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx() + 1);
+            if (currentTask instanceof DrtDriveTask && nextTask instanceof DrtStayTask) {
+                test = true;
+                //return true; // vehicles coming back to depot always satisfy the contraints
+            }
         }
         for (int s = insertion.getPickupIdx(); s < insertion.getDropoffIdx(); s++) {
             VehicleData.Stop stop = vEntry.stops.get(s);
             // all stops after pickup are delayed by pickupDetourTimeLoss
             if (stop.task.getBeginTime() + pickupDetourTimeLoss > stop.maxArrivalTime //
                     || stop.task.getEndTime() + pickupDetourTimeLoss > stop.maxDepartureTime) {
+                if (test){
+                    System.out.println();
+                }
                 return false;
             }
         }
@@ -198,27 +244,32 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
             // all stops after dropoff are delayed by totalTimeLoss
             if (stop.task.getBeginTime() + totalTimeLoss > stop.maxArrivalTime //
                     || stop.task.getEndTime() + totalTimeLoss > stop.maxDepartureTime) {
+                if (test){
+                    System.out.println();
+                }
                 return false;
             }
         }
 
+
+
         // reject solutions when maxWaitTime for the new request is violated
-        double driveToPickupStartTime = getDriveToInsertionStartTime(vEntry, insertion.getPickupIdx());
-        double pickupEndTime = driveToPickupStartTime + insertion.getTimeToPickup() + vEntry.vehicle.getCapacity() * (((VehicleImpl)vEntry.vehicle).getVehicleType().getAccessTime() + ((VehicleImpl)vEntry.vehicle).getVehicleType().getEgressTime());
-
-        if (pickupEndTime > drtRequest.getLatestStartTime()) {
-            return false;
-        }
-
-        // reject solutions when latestArrivalTime for the new request is violated
-        double dropoffStartTime = insertion.getPickupIdx() == insertion.getDropoffIdx()
-                ? pickupEndTime + insertion.getTimeFromPickup()
-                : vEntry.stops.get(insertion.getDropoffIdx() - 1).task.getEndTime() + pickupDetourTimeLoss
-                + insertion.getTimeToDropoff();
-
-        if (dropoffStartTime > drtRequest.getLatestArrivalTime()) {
-            return false;
-        }
+//        double driveToPickupStartTime = getDriveToInsertionStartTime(vEntry, insertion.getPickupIdx());
+//        double pickupEndTime = driveToPickupStartTime + insertion.getTimeToPickup() + vEntry.vehicle.getCapacity() * (((VehicleImpl)vEntry.vehicle).getVehicleType().getAccessTime() + ((VehicleImpl)vEntry.vehicle).getVehicleType().getEgressTime());
+//
+//        if (pickupEndTime > drtRequest.getLatestStartTime()) {
+//            return false;
+//        }
+//
+//        // reject solutions when latestArrivalTime for the new request is violated
+//        double dropoffStartTime = insertion.getPickupIdx() == insertion.getDropoffIdx()
+//                ? pickupEndTime + insertion.getTimeFromPickup()
+//                : vEntry.stops.get(insertion.getDropoffIdx() - 1).task.getEndTime() + pickupDetourTimeLoss
+//                + insertion.getTimeToDropoff();
+//
+//        if (dropoffStartTime > drtRequest.getLatestArrivalTime()) {
+//            return false;
+//        }
         return true;// all constraints satisfied
     }
 

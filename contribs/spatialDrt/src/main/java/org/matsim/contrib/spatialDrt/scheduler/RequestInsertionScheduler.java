@@ -37,10 +37,14 @@ import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.StayTask;
+import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
 import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.contrib.dvrp.tracker.OnlineDriveTaskTracker;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
 import org.matsim.contrib.dvrp.util.LinkTimePair;
+import org.matsim.contrib.spatialDrt.eav.ChargerPathPair;
+import org.matsim.contrib.spatialDrt.eav.DischargingRate;
+import org.matsim.contrib.spatialDrt.eav.DrtChargeTask;
 import org.matsim.contrib.spatialDrt.schedule.DrtQueueTask;
 import org.matsim.contrib.spatialDrt.schedule.DrtStopTask;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
@@ -121,8 +125,9 @@ public class RequestInsertionScheduler {
 		} else { // insert pickup after an existing stop/stay task
 			DrtStayTask stayTask = null;
 			DrtStopTask stopTask = null;
+			DrtChargeTask chargeTask = null;
 			if (insertion.getPickupIdx() == 0) {
-				if (currentTask.getDrtTaskType() == DrtTask.DrtTaskType.STAY) {
+				if (currentTask instanceof DrtStayTask) {
 					stayTask = (DrtStayTask)currentTask; // ongoing stay task
 					double now = timer.getTimeOfDay();
 					if (stayTask.getEndTime() > now) { // stop stay task; a new stop/drive task can be inserted now
@@ -130,6 +135,14 @@ public class RequestInsertionScheduler {
 					}
 				} else if (currentTask instanceof DrtStopTask){
 					stopTask = (DrtStopTask)currentTask; // ongoing stop task
+				}
+				else if (currentTask instanceof DrtChargeTask){
+					if (schedule.getTasks().get(currentTask.getTaskIdx() + 1) instanceof DrtStayTask){
+						stayTask = (DrtStayTask)schedule.getTasks().get(currentTask.getTaskIdx() + 1);
+						stayTask.setEndTime(stayTask.getBeginTime());
+					}else{
+						chargeTask = (DrtChargeTask)currentTask;
+					}
 				}
 			} else {
 				stopTask = (DrtStopTask) stops.get(insertion.getPickupIdx() - 1).task; // future stop task
@@ -175,6 +188,9 @@ public class RequestInsertionScheduler {
 				return;
 			} else {
 				StayTask stayOrStopTask = stayTask != null ? stayTask : stopTask;
+				if (stayOrStopTask == null){
+					stayOrStopTask = chargeTask;
+				}
 
 				// remove drive i->i+1 (if there is one)
 				if (insertion.getPickupIdx() < stops.size()) {// there is at least one following stop
@@ -297,19 +313,50 @@ public class RequestInsertionScheduler {
 		}
 	}
 
-    public void insertQuequingTask(Vehicle vehicle){
+	public void insertQuequingTask(Vehicle vehicle, double queueTime){
 		Schedule schedule = vehicle.getSchedule();
 		int currentTaskIdx = schedule.getCurrentTask().getTaskIdx();
-		DrtStopTask nextTask = (DrtStopTask) schedule.getTasks().get(currentTaskIdx + 1);
+		StayTaskImpl nextTask = (StayTaskImpl) schedule.getTasks().get(currentTaskIdx + 1);
 		if (schedule.getCurrentTask() instanceof DrtQueueTask){
-			schedule.getCurrentTask().setEndTime(schedule.getCurrentTask().getEndTime() + 1);
+			schedule.getCurrentTask().setEndTime(schedule.getCurrentTask().getEndTime() + queueTime);
 		}else{
-			schedule.addTask(currentTaskIdx + 1, new DrtQueueTask(timer.getTimeOfDay(), timer.getTimeOfDay() + 1.0, nextTask.getLink()));
-			modifyLanes.modifyLanes(nextTask.getLink().getId(), timer.getTimeOfDay(), -1.0);
+			schedule.addTask(currentTaskIdx + 1, new DrtQueueTask(timer.getTimeOfDay(), timer.getTimeOfDay() + queueTime, nextTask.getLink()));
 			schedule.nextTask();
 		}
-
+		//modifyLanes(nextTask.getLink().getId(), timer.getTimeOfDay(), -1.0);
 	}
 
 
+	public void changeCharger(Vehicle vehicle, double now){
+		Schedule schedule = vehicle.getSchedule();
+		int currentTaskIdx = schedule.getCurrentTask().getTaskIdx();
+		schedule.getTasks().get(currentTaskIdx + 1).setBeginTime(now);
+		schedule.getTasks().get(currentTaskIdx + 1).setEndTime(now);
+		scheduleTimingUpdater.updateTimingsStartingFromTaskIdx(vehicle, currentTaskIdx + 2,now);
+	}
+
+	public void chargingVehicle(Vehicle vehicle, ChargerPathPair lp) {
+		Schedule schedule = vehicle.getSchedule();
+		int idx = schedule.getCurrentTask().getTaskIdx();
+		Link currentLink = ((DrtStayTask) schedule.getCurrentTask()).getLink();
+		schedule.getCurrentTask().setEndTime(this.timer.getTimeOfDay());
+		if (currentLink != lp.charger.getLink()) {
+			if (lp.path.getArrivalTime() < vehicle.getServiceEndTime()) {
+				idx++;
+				schedule.addTask(idx, new DrtDriveTask(lp.path)); // add DRIVE
+			}
+		}
+		if (lp.path.getArrivalTime() >= vehicle.getServiceEndTime()) {
+			return;
+		}
+		double chargingTime = lp.charger.getEstimatedChargeTime((VehicleImpl) vehicle, ((VehicleImpl) vehicle).getBattery() - DischargingRate.calculateDischargeByDistance(VrpPaths.calcDistance(lp.path), ((VehicleImpl) vehicle).getVehicleType().getId()));
+		DrtChargeTask drtChargeTask = new DrtChargeTask(lp.path.getArrivalTime(), Double.min(lp.path.getArrivalTime() + chargingTime, vehicle.getServiceEndTime()), lp.charger);
+		idx++;
+		schedule.addTask(idx, drtChargeTask);
+		idx++;
+		if (drtChargeTask.getEndTime() <= vehicle.getServiceEndTime()) {
+			schedule.addTask(idx, new DrtStayTask(drtChargeTask.getEndTime(), vehicle.getServiceEndTime(), lp.charger.getLink()));
+		}
+		((VehicleImpl) vehicle).changeStatus(true);
+	}
 }

@@ -24,6 +24,8 @@ package org.matsim.contrib.spatialDrt.run;
 
 
 
+import jdk.nashorn.api.scripting.URLReader;
+import org.apache.commons.lang3.event.EventUtils;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -56,6 +58,7 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ModeParams;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.events.EventsUtils;
+import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -64,6 +67,7 @@ import org.matsim.pt.transitSchedule.api.TransitStopArea;
 import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -75,7 +79,7 @@ import java.util.function.Function;
  * @author jbischoff
  *
  */
-public final class DrtControlerCreator {
+public final class SpatialDrtControlerCreator {
 
 	public static Scenario createScenarioWithDrtRouteFactory(Config config) {
 		Scenario scenario = ScenarioUtils.createScenario(config);
@@ -91,8 +95,8 @@ public final class DrtControlerCreator {
 	 * @param otfvis
 	 * @return
 	 */
-	public static Controler createControler(Config config, boolean otfvis) throws IOException {
-		return createControler(config, otfvis, cfg -> {
+	public static Controler createControler( Config config, boolean otfvis) throws IOException {
+		return createControler( config, otfvis, cfg -> {
 			Scenario scenario = createScenarioWithDrtRouteFactory(cfg);
 			ScenarioUtils.loadScenario(scenario);
 			return scenario;
@@ -125,36 +129,6 @@ public final class DrtControlerCreator {
 		controler.getEvents().addHandler(linkLinkTimeCalculatorAV);
 		final TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(scenario.getNetwork(), scenario.getConfig().travelTimeCalculator());
 
-		//String EVENTSFILE = "/home/ubuntu/data/biyu/IdeaProjects/NewParking/out/artifacts/output/drt_mix_V450_T250_bay_optimal/ITERS/it.40/40.events.xml.gz";
-		String EVENTSFILE = "/home/biyu/IdeaProjects/NewParking/output/drt_mix_V450_T250_bay_optimal/ITERS/it.40/40.events.xml.gz";
-		EventsManager manager = EventsUtils.createEventsManager();
-//		manager.addHandler(waitTimeCalculator);
-//		manager.addHandler(waitLinkTimeCalculatorAV);
-//		manager.addHandler(waitTimeCalculatorAV);
-//		manager.addHandler(stopStopTimeCalculator);
-//		manager.addHandler(stopStopTimeCalculatorAV);
-//		manager.addHandler(linkLinkTimeCalculatorAV);
-		manager.addHandler(travelTimeCalculator);
-
-		AtodConfigGroup atodCfg = (AtodConfigGroup) scenario.getConfig().getModule(AtodConfigGroup.GROUP_NAME);
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(atodCfg.getStopInAreaURL(config.getContext()).openStream()));
-		String line = reader.readLine();
-		Set<Id<TransitStopFacility>> ids = new HashSet<>();
-		while(line!=null) {
-			ids.add(Id.create(line, TransitStopFacility.class));
-			line = reader.readLine();
-
-		}
-		reader.close();
-		for(TransitStopFacility stop:scenario.getTransitSchedule().getFacilities().values()) {
-			IDS:
-			for(Id<TransitStopFacility> id:ids)
-				if(stop.getId().equals(id)) {
-					stop.setStopAreaId(Id.create("mp", TransitStopArea.class));
-					break IDS;
-				}
-		}
 		addDrtAsSingleDvrpModeToControler(controler);
 		if (otfvis) {
 			controler.addOverridingModule(new OTFVisLiveModule());

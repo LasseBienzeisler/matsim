@@ -62,7 +62,7 @@ public class ParkingInDepot implements ParkingStrategy {
 
     @Override
     public ParkingStrategy.Strategies getCurrentStrategy(Id<Vehicle> vehicleId) {
-        return Strategies.ParkingInDepot;
+        return Strategies.parkingInDepot;
     }
 
 }

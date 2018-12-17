@@ -27,6 +27,8 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.data.Fleet;
 import org.matsim.contrib.dvrp.router.DvrpRoutingNetworkProvider;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSource;
+import org.matsim.contrib.spatialDrt.run.AtodConfigGroup;
+import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.vehicles.VehicleType;
 
@@ -42,6 +44,10 @@ public class FleetProvider implements Provider<Fleet> {
 	@Inject(optional = true)
 	@Named(VrpAgentSource.DVRP_VEHICLE_TYPE)
 	VehicleType vehicleType;
+	@Inject
+	AtodConfigGroup atodCfg;
+	@Inject
+	Config config;
 
 	private final URL url;
 
@@ -52,7 +58,7 @@ public class FleetProvider implements Provider<Fleet> {
 	@Override
 	public Fleet get() {
 		FleetImpl fleet = new FleetImpl();
-		new VehicleReader(network, fleet).parse(url);
+		new VehicleReader(network, fleet, atodCfg.getDrtVehicleTypeFileURL(config.getContext())).parse(url);
 		return fleet;
 	}
 

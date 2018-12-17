@@ -35,6 +35,7 @@ import org.xml.sax.Attributes;
 import org.matsim.contrib.dvrp.data.Vehicle;
 
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -44,12 +45,8 @@ import java.util.Stack;
  */
 public class VehicleReader extends MatsimXmlParser {
 	private static final String VEHICLE = "vehicle";
-	private final static String ATTRIBUTES = "attributes";
-    private final static String ATTRIBUTE = "attribute";
-	private final AttributesXmlReaderDelegate attributesDelegate = new AttributesXmlReaderDelegate();
-	private org.matsim.utils.objectattributes.attributable.Attributes currentAttributes = null;
 
-	private static final int DEFAULT_CAPACITY = 1;
+	private static final double DEFAULT_CAPACITY = 1;
 	private static final double DEFAULT_T_0 = 0;
 	private static final double DEFAULT_T_1 = 24 * 60 * 60;
 	private static final double DEFAULT_BOARDING = 1.0;
@@ -57,74 +54,42 @@ public class VehicleReader extends MatsimXmlParser {
 
 	private FleetImpl fleet;
 	private Map<Id<Link>, ? extends Link> links;
-	private Map<String, VehicleType> vehicleTypes = new HashMap<>();
+	private Map<String, DynVehicleType> vehicleTypes = new HashMap<>();
 
-	public VehicleReader(Network network, FleetImpl fleet) {
+	public VehicleReader(Network network, FleetImpl fleet, URL drtVehicleTypeFileURL) {
 		this.fleet = fleet;
 		links = network.getLinks();
-
+		new DrtVehicleTypeReader(vehicleTypes).parse(drtVehicleTypeFileURL);
+		fleet.setVehicleTypes(vehicleTypes.values());
 	}
 
 	@Override
 	public void startTag(String name, Attributes atts, Stack<String> context) {
-		switch (name) {
-			case VEHICLE:
-				fleet.addVehicle(createVehicle(atts));
-				break;
-            case ATTRIBUTES:
-			case ATTRIBUTE:
-                attributesDelegate.startTag( name , atts , context , currentAttributes );
+		if (VEHICLE.equals(name)) {
+			fleet.addVehicle(createVehicle(atts));
 		}
 	}
 
 	@Override
 	public void endTag(String name, String content, Stack<String> context) {
-        switch( name ) {
-            case ATTRIBUTE:
-                attributesDelegate.endTag(name, content, context);
-                break;
-        }
 	}
 
 	private VehicleImpl createVehicle(Attributes atts) {
 		Id<Vehicle> id = Id.create(atts.getValue("id"), Vehicle.class);
 		Link startLink = links.get(Id.createLinkId(atts.getValue("start_link")));
-		int capacity = ReaderUtils.getInt(atts, "capacity", DEFAULT_CAPACITY);
 		double t0 = ReaderUtils.getDouble(atts, "t_0", DEFAULT_T_0);
 		double t1 = ReaderUtils.getDouble(atts, "t_1", DEFAULT_T_1);
-		String type = capacity + "V";
-		if (!vehicleTypes.containsKey(type)){
-			VehicleType vehicleType = new DynVehicleType();
-			VehicleCapacity cap = new VehicleCapacityImpl();
-			cap.setSeats(capacity);
-			vehicleType.setCapacity(cap);
-			if (vehicleType instanceof DynVehicleType) {
-				if (capacity == 1){
-					vehicleType.setLength(3.0);
-					((DynVehicleType) vehicleType).setBatteryCapacity(20.0);
-				}
-				if (capacity == 4){
-					vehicleType.setLength(5.0);
-					((DynVehicleType) vehicleType).setBatteryCapacity(32.0);
-				}
-				if (capacity == 10){
-					vehicleType.setLength(6.5);
-					((DynVehicleType) vehicleType).setBatteryCapacity(60.0);
-				}
-				if (capacity == 20){
-					vehicleType.setLength(9.0);
-					((DynVehicleType) vehicleType).setBatteryCapacity(90.0);
-				}
-			}
-			vehicleTypes.put(type, vehicleType);
-		}
-		VehicleType vehicleType = vehicleTypes.get(type);
-		return createVehicle(id, startLink, capacity, t0, t1,  vehicleType);
+		String mode = ReaderUtils.getString(atts, "mode",null);
+		String type = ReaderUtils.getString(atts, "type", null);
+		DynVehicleType vehicleType = vehicleTypes.get(type);
+		int capacity = vehicleType.getSeats();
+		VehicleImpl vehicle =  createVehicle(id, startLink, capacity, t0, t1, vehicleType);
+		vehicle.getAttributes().putAttribute("mode", mode);
+		return vehicle;
 	}
 
-	protected VehicleImpl createVehicle(Id<Vehicle> id, Link startLink, int capacity, double t0, double t1, VehicleType vehicleType) {
-		VehicleImpl vehicle = new VehicleImpl(id, startLink, capacity, t0, t1,  vehicleType);
-		currentAttributes = vehicle.getAttributes();
-		return vehicle;
+	protected VehicleImpl createVehicle(Id<Vehicle> id, Link startLink, int capacity, double t0, double t1,
+										DynVehicleType vehicleType) {
+		return new VehicleImpl(id, startLink, capacity, t0, t1,vehicleType);
 	}
 }

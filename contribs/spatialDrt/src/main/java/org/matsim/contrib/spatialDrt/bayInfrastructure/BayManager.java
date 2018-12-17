@@ -1,5 +1,7 @@
 package org.matsim.contrib.spatialDrt.bayInfrastructure;
 
+import org.apache.log4j.Logger;
+import org.matsim.contrib.spatialDrt.parkingStrategy.insertionOptimizer.DefaultUnplannedRequestInserter;
 import org.matsim.contrib.spatialDrt.run.AtodConfigGroup;
 import com.google.inject.Inject;
 import org.matsim.api.core.v01.Id;
@@ -17,6 +19,8 @@ import org.matsim.pt.transitSchedule.api.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BayManager implements VehicleDepartsAtFacilityEventHandler, IterationStartsListener {
     Map<Id<TransitStopFacility>, Bay> bays = new HashMap<>();
@@ -24,6 +28,8 @@ public class BayManager implements VehicleDepartsAtFacilityEventHandler, Iterati
     Collection<TransitStopFacility> transitStopFacilities;
     Network network;
     AtodConfigGroup atodConfigGroup;
+    private static final Logger log = Logger.getLogger(BayManager.class);
+    Set<Id<Link>> linksToBeUpdated = new HashSet<>();
 
 
     @Inject
@@ -31,13 +37,29 @@ public class BayManager implements VehicleDepartsAtFacilityEventHandler, Iterati
         transitStopFacilities = scenario.getTransitSchedule().getFacilities().values();
         this.network = scenario.getNetwork();
         this.atodConfigGroup = AtodConfigGroup.get(scenario.getConfig());
-        initate();
+        initiate();
         eventsManager.addHandler(this);
     }
 
-    private void initate(){
+    private void initiate(){
         for (TransitStopFacility stop: transitStopFacilities){
-            Bay bay = new Bay(stop, network.getLinks().get(stop.getLinkId()).getLength(), atodConfigGroup.getMinBaySize());
+            Bay bay;
+            switch(atodConfigGroup.getBayMode()) {
+                case curbSide:
+                    bay = new CurbSide(stop, network.getLinks().get(stop.getLinkId()).getLength(), atodConfigGroup.getMinBaySize());
+                    break;
+                case externalBay:
+                    bay = new ExternalBay(stop, network.getLinks().get(stop.getLinkId()).getLength(), atodConfigGroup.getMinBaySize());
+                    break;
+                case infinity:
+                    bay = new ExternalBay(stop, Double.POSITIVE_INFINITY, atodConfigGroup.getMinBaySize());
+                    break;
+                case singleVehicle:
+                    bay = new CurbSideByNumber(stop,1 );
+                    break;
+                default:
+                    throw new RuntimeException("No such bay mode!");
+            }
             bays.put(stop.getId(), bay);
             baysByStops.put(stop.getLinkId(),stop.getId());
         }
@@ -45,11 +67,25 @@ public class BayManager implements VehicleDepartsAtFacilityEventHandler, Iterati
 
     public Bay getBayByLinkId(Id<Link> linkId){
         if (!baysByStops.containsKey(linkId)){
-            TransitStopFacility transitStopFacility = (new TransitScheduleFactoryImpl()).createTransitStopFacility(Id.create(linkId.toString() + "_DRT", TransitStopFacility.class),
+            TransitStopFacility stop= (new TransitScheduleFactoryImpl()).createTransitStopFacility(Id.create(linkId.toString() + "_DRT", TransitStopFacility.class),
                     network.getLinks().get(linkId).getCoord(),false);
-            transitStopFacility.setLinkId(linkId);
-            bays.put(transitStopFacility.getId(), new Bay(transitStopFacility, network.getLinks().get(linkId).getLength(), atodConfigGroup));
-            baysByStops.put(linkId,transitStopFacility.getId());
+            stop.setLinkId(linkId);
+            Bay bay;
+            switch (atodConfigGroup.getDoor2DoorStop()){
+                case infinity:
+                    bay = new ExternalBay(stop, Double.POSITIVE_INFINITY, atodConfigGroup.getMinBaySize());
+                    break;
+                case linkLength:
+                    bay = new ExternalBay(stop, network.getLinks().get(linkId).getLength(), atodConfigGroup.getMinBaySize());
+                    break;
+                case zero:
+                    bay = new CurbSide(stop, network.getLinks().get(linkId).getLength(), atodConfigGroup.getMinBaySize());
+                    break;
+                default:
+                    throw new RuntimeException("No such door-to-door stop strategy!");
+            }
+            bays.put(stop.getId(), bay);
+            baysByStops.put(linkId, stop.getId());
         }
         return bays.get(baysByStops.get(linkId));
     }
@@ -72,16 +108,30 @@ public class BayManager implements VehicleDepartsAtFacilityEventHandler, Iterati
     public void handleEvent(VehicleDepartsAtFacilityEvent event) {
         Bay bay = bays.get(event.getFacilityId());
         bay.removeVehicle(event.getVehicleId());
-        if (bay.getDwellingVehicles().contains(event.getVehicleId())){
-            throw new RuntimeException(event.getVehicleId().toString() + " is still in the bay " + event.getFacilityId());
+        int t=0;
+        while (bay.isDwelling(event.getVehicleId())){
+            log.warn("Vehicle to be removed is still in the bay! id:"+event.getVehicleId());
+            bay.removeVehicle(event.getVehicleId());
+            if(t++>100)
+                break;
+        }
+        if (!bay.isBlocking()){
+            linksToBeUpdated.add(bay.getLinkId());
         }
     }
 
+    public Set<Id<Link>> getLinksToBeUpdated() {
+        return linksToBeUpdated;
+    }
 
     @Override
     public void notifyIterationStarts(IterationStartsEvent event) {
         bays.clear();
         baysByStops.clear();
-        initate();
+        initiate();
+    }
+
+    public void clearLinksToBeUpdated() {
+        linksToBeUpdated.clear();
     }
 }

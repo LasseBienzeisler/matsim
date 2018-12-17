@@ -37,6 +37,8 @@ import org.matsim.contrib.dvrp.run.MobsimTimerProvider;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelDisutilityProvider;
 import org.matsim.contrib.spatialDrt.bayInfrastructure.VehicleLength;
 import org.matsim.contrib.spatialDrt.dynAgent.VrpAgentLogic;
+import org.matsim.contrib.spatialDrt.eav.ChargingStrategy;
+import org.matsim.contrib.spatialDrt.eav.EarlyReservedChargingStrategy;
 import org.matsim.contrib.spatialDrt.parkingStrategy.DefaultDrtOptimizer;
 import org.matsim.contrib.spatialDrt.parkingStrategy.MixedParkingStrategy;
 import org.matsim.contrib.spatialDrt.parkingStrategy.ParkingStrategy;
@@ -63,16 +65,19 @@ import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 public class DrtQSimModule extends AbstractQSimModule {
 	@Override
 	protected void configureQSim() {
+		AtodConfigGroup atodConfigGroup = AtodConfigGroup.get(getConfig());
 		bind(MobsimTimer.class).toProvider(MobsimTimerProvider.class).asEagerSingleton();
 		DvrpTravelDisutilityProvider.bindTravelDisutilityForOptimizer(binder(), DefaultDrtOptimizer.DRT_OPTIMIZER);
-
+		if (atodConfigGroup.isEAV()) {
+			this.bind(ChargingStrategy.class).to(EarlyReservedChargingStrategy.class).asEagerSingleton();
+		}
 		bind(DrtOptimizer.class).to(DefaultDrtOptimizer.class).asEagerSingleton();
 
 
 		bind(VehicleData.EntryFactory.class).to(VehicleDataEntryFactoryImpl.class).asEagerSingleton();
 
 		bind(DrtTaskFactory.class).to(DrtTaskFactoryImpl.class).asEagerSingleton();
-		bind(ModifyLanes.class);
+		bind(ModifyLanes.class).asEagerSingleton();
 		bind(EmptyVehicleRelocator.class).asEagerSingleton();
 		bind(DrtScheduleInquiry.class).asEagerSingleton();
 		bind(RequestInsertionScheduler.class).asEagerSingleton();
@@ -95,19 +100,19 @@ public class DrtQSimModule extends AbstractQSimModule {
 		// ATOD
 		AtodConfigGroup drtCfg = AtodConfigGroup.get(getConfig());
 		bind(VehicleLength.class).asEagerSingleton();
-		if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.AlwaysRoaming)){
+		if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.alwaysRoaming)){
 			bind(ParkingStrategy.class).to(RoamingStrategy.class).asEagerSingleton();
-		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.ParkingOntheRoad)){
+		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.parkingOntheRoad)){
 			bind(ParkingStrategy.class).to(ParkingOntheRoad.class).asEagerSingleton();
-		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.ParkingInDepot)){
+		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.parkingInDepot)){
 			bind(ParkingStrategy.class).to(ParkingInDepot.class).asEagerSingleton();
 			bind(DepotManager.class).to(DepotManagerSameDepot.class).asEagerSingleton();
-		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.MixedParking)){
+		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.mixedParking)){
 			bind(ParkingOntheRoad.class).asEagerSingleton();
 			bind(ParkingInDepot.class).asEagerSingleton();
 			bind(ParkingStrategy.class).to(MixedParkingStrategy.class).asEagerSingleton();
 			bind(DepotManager.class).to(DepotManagerDifferentDepots.class).asEagerSingleton();
-		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.NoParkingStrategy)){
+		}else if (drtCfg.getParkingStrategy().equals(ParkingStrategy.Strategies.noParkingStrategy)){
 			bind(ParkingStrategy.class).to(NoParkingStrategy.class).asEagerSingleton();
 		}else{
 			throw new RuntimeException("Parking strategy: " + drtCfg.getParkingStrategy().toString() + " does not exist");

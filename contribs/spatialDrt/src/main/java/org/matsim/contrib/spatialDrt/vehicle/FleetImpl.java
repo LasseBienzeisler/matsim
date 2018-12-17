@@ -21,6 +21,7 @@ package org.matsim.contrib.spatialDrt.vehicle;
 
 import org.matsim.api.core.v01.Id;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
  */
 public class FleetImpl implements Fleet {
 	private final Map<Id<Vehicle>, Vehicle> vehicles = new LinkedHashMap<>();
+	private Collection<DynVehicleType> vehicleTypes;
 
 	@Override
 	public Map<Id<Vehicle>, ? extends Vehicle> getVehicles() {
@@ -44,7 +46,7 @@ public class FleetImpl implements Fleet {
 
 
 	public Map<Id<Vehicle>, ? extends Vehicle> getVehicles(String mode) {
-		return vehicles.entrySet().stream().filter(vehicle -> ((VehicleImpl)vehicle.getValue()).getAttributes().getAttribute("mode").equals(mode)).collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
+		return vehicles.entrySet().stream().filter(vehicle -> ((VehicleImpl)vehicle.getValue()).getAttributes().getAttribute("mode").equals(mode)&& !((VehicleImpl)vehicle.getValue()).getStatus()).collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
 	}
 
 	public void addVehicle(VehicleImpl vehicle) {
@@ -55,5 +57,13 @@ public class FleetImpl implements Fleet {
 		for (Vehicle v : vehicles.values()) {
 			v.resetSchedule();
 		}
+	}
+
+	public Collection<DynVehicleType> getVehicleTypes(){
+		return vehicleTypes;
+	}
+
+	public void setVehicleTypes(Collection<DynVehicleType> vehicleTypes) {
+		this.vehicleTypes = vehicleTypes;
 	}
 }

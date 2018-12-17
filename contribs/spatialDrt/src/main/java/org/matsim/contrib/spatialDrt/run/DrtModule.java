@@ -23,8 +23,12 @@ import org.matsim.contrib.dvrp.router.TimeAsTravelDisutility;
 import org.matsim.contrib.spatialDrt.bayInfrastructure.BayManager;
 import org.matsim.contrib.spatialDrt.dwelling.ClearNetworkChangeEvents;
 import org.matsim.contrib.spatialDrt.dwelling.DrtAndTransitStopHandlerFactory;
+import org.matsim.contrib.spatialDrt.eav.ChargerManager;
+import org.matsim.contrib.spatialDrt.eav.DischargingRate;
+import org.matsim.contrib.spatialDrt.eav.SimpleChargerManager;
 import org.matsim.contrib.spatialDrt.parkingStrategy.DefaultDrtOptimizer;
 import org.matsim.contrib.spatialDrt.routingModule.DrtRoutingModule;
+import org.matsim.contrib.spatialDrt.scheduler.ModifyLanes;
 import org.matsim.contrib.spatialDrt.vehicle.FleetProvider;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
@@ -40,6 +44,8 @@ public final class
 DrtModule extends AbstractModule {
 	@Inject
 	DrtConfigGroup drtCfg;
+	@Inject
+	AtodConfigGroup atodCfg;
 
 	@Override
 	public void install() {
@@ -51,6 +57,7 @@ DrtModule extends AbstractModule {
 		bind(DrtRequestValidator.class).to(DefaultDrtRequestValidator.class);
 		bind(DepotFinder.class).to(NearestStartLinkAsDepot.class);
 		bind(BayManager.class).asEagerSingleton();
+
 		bind(RebalancingStrategy.class).to(NoRebalancingStrategy.class);
 		bind(TravelDisutilityFactory.class).annotatedWith(Names.named(DefaultDrtOptimizer.DRT_OPTIMIZER))
 				.toInstance(TimeAsTravelDisutility::new);
@@ -61,7 +68,10 @@ DrtModule extends AbstractModule {
 		addControlerListenerBinding().to(ClearNetworkChangeEvents.class).asEagerSingleton();
 		addControlerListenerBinding().to(BayManager.class).asEagerSingleton();
 
-		//bind(DebugHandler.class).asEagerSingleton();
+		if (atodCfg.isEAV()) {
+			this.bind(DischargingRate.class).asEagerSingleton();
+			this.bind(ChargerManager.class).to(SimpleChargerManager.class).asEagerSingleton();
+		}
 
 
 		switch (drtCfg.getOperationalScheme()) {

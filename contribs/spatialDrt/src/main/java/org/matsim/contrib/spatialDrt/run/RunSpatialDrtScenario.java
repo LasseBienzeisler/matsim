@@ -34,20 +34,20 @@ import java.io.IOException;
 /**
  * @author michalm
  */
-public class RunDrtScenario {
-	public static void run(String configFile, boolean otfvis) throws IOException {
-		Config config = ConfigUtils.loadConfig(configFile, new AtodConfigGroup(),new DrtConfigGroup(), new DvrpConfigGroup(),
+public class RunSpatialDrtScenario {
+	public static void run(String[] args, boolean otfvis) throws IOException {
+		Config config = ConfigUtils.loadConfig(args[0], new AtodConfigGroup(),new DrtConfigGroup(), new DvrpConfigGroup(),
 				new OTFVisConfigGroup());
         Logger.getLogger("org.matsim.core.mobsim.qsim.changeeventsengine.NetworkChangeEventsEngine").setLevel(Level.ERROR);
         Logger.getLogger(DefaultUnplannedRequestInserter.class).setLevel(Level.ERROR);
-		createControler(config, otfvis).run();
+		createControler( config, otfvis).run();
 	}
 
-	public static Controler createControler(Config config, boolean otfvis) throws IOException {
-		return DrtControlerCreator.createControler(config, otfvis);
+	public static Controler createControler( Config config, boolean otfvis) throws IOException {
+		return SpatialDrtControlerCreator.createControler( config, otfvis);
 	}
 
 	public static void main(String[] args) throws IOException {
-		RunDrtScenario.run(args[0], false);
+		RunSpatialDrtScenario.run(args, false);
 	}
 }

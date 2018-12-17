@@ -1,30 +1,31 @@
 package org.matsim.contrib.spatialDrt.vehicle;
 
 import org.matsim.api.core.v01.Id;
+import org.matsim.vehicles.VehicleCapacity;
+import org.matsim.vehicles.VehicleCapacityImpl;
 import org.matsim.vehicles.VehicleType;
 import org.matsim.vehicles.VehicleTypeImpl;
 
 
 public class DynVehicleType extends VehicleTypeImpl {
     public static String DYNTYPE = "dynType";
-    private double accessTime = 1.5;
-    private double egressTime = 1.5;
+
     private double batteryCapacity;
 
+    private double maxBatteryMeter;
 
-    public DynVehicleType(){
-        super(Id.create(DYNTYPE, VehicleType.class));
+
+
+
+    public DynVehicleType(Id<VehicleType> id, int seats, double accessTime, double egressTime){
+        super(id);
+        VehicleCapacity capacity = new VehicleCapacityImpl();
+        capacity.setSeats(Integer.valueOf(seats));
+        setCapacity(capacity);
+        setAccessTime(accessTime);
+        setEgressTime(egressTime);
     }
 
-    @Override
-    public double getAccessTime() {
-        return this.accessTime;
-    }
-
-    @Override
-    public double getEgressTime() {
-        return this.egressTime;
-    }
 
     public double getBatteryCapacity() {
         return batteryCapacity;
@@ -33,4 +34,25 @@ public class DynVehicleType extends VehicleTypeImpl {
     public void setBatteryCapacity(double batteryCapacity) {
         this.batteryCapacity = batteryCapacity;
     }
+
+    public int getSeats() {
+        return getCapacity().getSeats();
+    }
+
+    public static DynVehicleType defaultDynVehicleType(Id<VehicleType> id){
+        return new DynVehicleType(id, 0, 0.0,0.0);
+    }
+
+    public void setMaxBatteryMeter(double maxBatteryMeter) {
+        this.maxBatteryMeter = maxBatteryMeter;
+    }
+
+    public double getMaxBatteryMeter() {
+        return maxBatteryMeter;
+    }
+
+    public double getDischargingRate() {
+        return batteryCapacity / maxBatteryMeter;
+    }
+
 }

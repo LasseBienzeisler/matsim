@@ -26,21 +26,21 @@ public class MixedParkingStrategy implements ParkingStrategy {
     @Override
     public ParkingStrategy.ParkingLocation parking(Vehicle vehicle, double time) {
         if (vehicle.getCapacity() <= 10 && !isDaytime(time)){
-            parkingStrategiesPerVehicle.put(vehicle.getId(), Strategies.ParkingOntheRoad);
+            parkingStrategiesPerVehicle.put(vehicle.getId(), Strategies.parkingOntheRoad);
             return parkingOntheRoad.parking(vehicle, time);
         }
-        parkingStrategiesPerVehicle.put(vehicle.getId(), Strategies.ParkingInDepot);
+        parkingStrategiesPerVehicle.put(vehicle.getId(), Strategies.parkingInDepot);
         return parkingInDepot.parking(vehicle, time);
     }
 
     @Override
     public void departing(Vehicle vehicle, double time) {
         switch (parkingStrategiesPerVehicle.get(vehicle.getId())){
-            case ParkingOntheRoad:
+            case parkingOntheRoad:
                 parkingOntheRoad.departing(vehicle,time);
                 parkingStrategiesPerVehicle.remove(vehicle.getId());
                 break;
-            case ParkingInDepot:
+            case parkingInDepot:
                 parkingInDepot.departing(vehicle,time);
                 parkingStrategiesPerVehicle.remove(vehicle.getId());
                 break;

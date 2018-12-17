@@ -43,7 +43,7 @@ public class FixedTransitStopHandler implements org.matsim.core.mobsim.qsim.pt.T
                                     List<PTPassengerAgent> enteringPassengers, PassengerAccessEgress handler, MobsimVehicle vehicle) {
         Bay bay = bayManager.getBayByFacilityId(stop.getId());
         bay.addVehicle(vehicle.getId());
-        if (bay.isFull() && bay.getVehicles().contains(vehicle.getId())) {
+        if (!bay.isDwelling(vehicle.getId())) {
             if (enteringPassengers.size() != 0 || leavingPassengers.size() != 0){
                 return 1.0;
             }
