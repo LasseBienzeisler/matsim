@@ -47,7 +47,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 
 	private final static Logger log = Logger.getLogger(TransitRouterNetworkFirstLastAVPT.class);
 	public static final double maxBeelineAVConnectionDistance = 2000;
-	public static final double maxBeelineWalkConnectionDistance = 500;
+	public static final double maxBeelineWalkConnectionDistance = 800;
 
 
 	private final Map<Id<Link>, TransitRouterNetworkLink> links = new LinkedHashMap<>();

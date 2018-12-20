@@ -20,6 +20,8 @@
 package org.matsim.contrib.spatialDrt.firstLastAVPTRouter;
 
 import com.google.inject.Inject;
+import org.matsim.api.core.v01.Coord;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.eventsBasedPTRouter.stopStopTimes.StopStopTime;
@@ -29,12 +31,15 @@ import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime.WaitLinkTi
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
+import org.matsim.core.utils.collections.QuadTree;
 import org.matsim.pt.router.PreparedTransitSchedule;
 import org.matsim.pt.router.TransitRouterConfig;
+import org.matsim.pt.transitSchedule.api.TransitStopArea;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Factory for the variable transit router
@@ -54,8 +59,11 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
     private final StopStopTime stopStopTime;
 	private final StopStopTime stopStopTimeAV;
 	private final LinkLinkTime linkLinkTimeAV;
-	private  Network cleanNetwork;
+	private Network cleanNetwork;
 	private TransitRouterParams params;
+
+	private Map<Id<TransitStopArea>,QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode>> stopsByArea = new HashMap<>();
+
 
 	@Inject
     public TransitRouterFirstLastAVPTFactory(final Scenario scenario, final WaitTime waitTime, final WaitTime waitTimeAV, final WaitLinkTime waitLinkTime, final StopStopTime stopStopTime, final StopStopTime stopStopTimeAV, final LinkLinkTime linkLinkTime, final TransitRouterNetworkFirstLastAVPT.NetworkModes networkModes) {
@@ -75,9 +83,38 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 		new TransportModeNetworkFilter(scenario.getNetwork()).filter(cleanNetwork, Collections.singleton("car"));
 		(new NetworkCleaner()).run(cleanNetwork);
 		this.params = new TransitRouterParams(scenario.getConfig().planCalcScore());
+		HashSet<Id<TransitStopArea>> stopAreas = new HashSet<>();
+		scenario.getTransitSchedule().getFacilities().values().stream().forEach(transitStopFacility -> stopAreas.add(transitStopFacility.getStopAreaId()));
+		for (Id<TransitStopArea> stopArea: stopAreas) {
+			Set<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> nodeInArea = this.routerNetwork.getNodes().values().stream().filter(node -> (node.stop.getStopAreaId() == stopArea)).collect(Collectors.toSet());
+			double minX = Double.POSITIVE_INFINITY;
+			double minY = Double.POSITIVE_INFINITY;
+			double maxX = Double.NEGATIVE_INFINITY;
+			double maxY = Double.NEGATIVE_INFINITY;
+			for (TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode node : nodeInArea)
+				if(node.line == null) {
+					Coord c = node.stop.getCoord();
+					if (c.getX() < minX)
+						minX = c.getX();
+					if (c.getY() < minY)
+						minY = c.getY();
+					if (c.getX() > maxX)
+						maxX = c.getX();
+					if (c.getY() > maxY)
+						maxY = c.getY();
+				}
+			QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> quadTree = new QuadTree<>(minX, minY, maxX, maxY);
+			for (TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode node : nodeInArea) {
+				if(node.line == null) {
+					Coord c = node.stop.getCoord();
+					quadTree.put(c.getX(), c.getY(), node);
+				}
+			}
+			stopsByArea.put(stopArea,quadTree);
+		}
 	}
 	@Override
 	public TransitRouterFirstLastAVPT get() {
-		return new TransitRouterFirstLastAVPT( config, new TransitRouterTravelTimeAndDisutilityFirstLastAVPT(params, config, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTimeAV, scenario.getConfig().travelTimeCalculator(), scenario.getConfig().qsim(), new PreparedTransitSchedule(scenario.getTransitSchedule())), routerNetwork, cleanNetwork);
+		return new TransitRouterFirstLastAVPT( config, new TransitRouterTravelTimeAndDisutilityFirstLastAVPT(params, config, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTimeAV, scenario.getConfig().travelTimeCalculator(), scenario.getConfig().qsim(), new PreparedTransitSchedule(scenario.getTransitSchedule())), routerNetwork, cleanNetwork, stopsByArea);
 	}
 }

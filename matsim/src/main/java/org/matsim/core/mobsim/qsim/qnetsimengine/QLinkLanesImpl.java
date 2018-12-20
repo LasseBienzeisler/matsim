@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.VehicleEntersTrafficEvent;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimVehicle;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QNetsimEngine.NetsimInternalInterface;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.DefaultLinkSpeedCalculator;
@@ -40,15 +41,7 @@ import org.matsim.vehicles.Vehicle;
 import org.matsim.vis.snapshotwriters.AgentSnapshotInfo;
 import org.matsim.vis.snapshotwriters.VisData;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Please read the docu of QBufferItem, QLane, QLinkInternalI (arguably to be renamed into something
@@ -267,7 +260,8 @@ public final class QLinkLanesImpl extends AbstractQLink {
 		
 		boolean lanesActive = false;
 		boolean movedWaitToRoad = false;
-		if ( context.qsimConfig.isInsertingWaitingVehiclesBeforeDrivingVehicles() ) {
+		Random random = MatsimRandom.getRandom();
+		if ( context.qsimConfig.getInsertingWaitingVehiclesBeforeDrivingVehiclesRatio() > random.nextDouble() ) {
 		    //TODO
 		    //Because moveBufferToNextLane() (called from moveLanes()) is kind of "moveInternalNodes()",
 		    //it should be executed before moveWaitToRoad() to keep the sequence fully consistent.

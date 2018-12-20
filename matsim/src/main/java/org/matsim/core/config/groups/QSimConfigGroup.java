@@ -449,23 +449,23 @@ public final class QSimConfigGroup extends ReflectiveConfigGroup {
 	// ---
 	private static final String INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES = "insertingWaitingVehiclesBeforeDrivingVehicles";
 	private static final String INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES_CMT =
-			"decides if waiting vehicles enter the network after or before the already driving vehicles were moved. Default: false";
-	private boolean insertingWaitingVehiclesBeforeDrivingVehicles = false;
+			"decides the ratio of waiting vehicles enter the network before the already driving vehicles were moved. Default: 0.0";
+	private double insertingWaitingVehiclesBeforeDrivingVehiclesRatio = 0.0;
 	// (yyyyyy switch this default to true; false has really weird consequences sometimes (vehicles waiting for hours in driveway;
 	// and this is not included into decongestion approach. kai/ihab, aug'18)
 	/**
 	 * @return {@value #INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES_CMT}
 	 */
 	@StringGetter(INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES)
-	public boolean isInsertingWaitingVehiclesBeforeDrivingVehicles() {
-		return this.insertingWaitingVehiclesBeforeDrivingVehicles;
+	public double getInsertingWaitingVehiclesBeforeDrivingVehiclesRatio() {
+		return this.insertingWaitingVehiclesBeforeDrivingVehiclesRatio;
 	}
 	/**
 	 * @param {@value {@link #INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES_CMT}}
 	 */
 	@StringSetter(INSERTING_WAITING_VEHICLES_BEFORE_DRIVING_VEHICLES)
-	public void setInsertingWaitingVehiclesBeforeDrivingVehicles(boolean val) {
-		this.insertingWaitingVehiclesBeforeDrivingVehicles = val;
+	public void setInsertingWaitingVehiclesBeforeDrivingVehiclesRatio(double val) {
+		this.insertingWaitingVehiclesBeforeDrivingVehiclesRatio = val;
 	}
 	// ---
 	@StringGetter(NODE_OFFSET)

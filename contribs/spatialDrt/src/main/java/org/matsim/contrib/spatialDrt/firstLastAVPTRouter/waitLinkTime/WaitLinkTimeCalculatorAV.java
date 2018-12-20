@@ -1,4 +1,5 @@
 package org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime;
+
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
@@ -15,12 +16,11 @@ import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.*;
+import org.matsim.api.core.v01.population.Person;
+import org.matsim.api.core.v01.population.Population;
 import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.TransitRouterFirstLastAVPT;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
-import org.matsim.pt.routes.ExperimentalTransitRoute;
-import org.matsim.pt.routes.ExperimentalTransitRouteFactory;
 
 import java.util.HashMap;
 import java.util.Map;

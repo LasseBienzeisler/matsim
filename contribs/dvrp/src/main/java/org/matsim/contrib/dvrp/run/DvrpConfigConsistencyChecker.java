@@ -31,7 +31,7 @@ public class DvrpConfigConsistencyChecker implements ConfigConsistencyChecker {
 	public void checkConsistency(Config config) {
 		new DynQSimConfigConsistencyChecker().checkConsistency(config);
 
-		if (!config.qsim().isInsertingWaitingVehiclesBeforeDrivingVehicles()) {
+		if (config.qsim().getInsertingWaitingVehiclesBeforeDrivingVehiclesRatio() < 1.0) {
 			// Typically, vrp paths are calculated from startLink to endLink
 			// (not from startNode to endNode). That requires making some assumptions
 			// on how much time travelling on the first and last links takes.

@@ -1,6 +1,6 @@
 package org.matsim.contrib.spatialDrt.firstLastAVPTRouter;
 
-import org.matsim.api.core.v01.TransportMode;
+
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 
 public class TransitRouterParams {

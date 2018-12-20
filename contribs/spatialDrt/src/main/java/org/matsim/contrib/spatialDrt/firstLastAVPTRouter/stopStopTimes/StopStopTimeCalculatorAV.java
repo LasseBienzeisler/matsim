@@ -30,7 +30,6 @@ import org.matsim.pt.transitSchedule.api.TransitStopFacility;
 import org.matsim.vehicles.Vehicle;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @Singleton

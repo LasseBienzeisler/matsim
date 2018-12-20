@@ -23,11 +23,13 @@ package org.matsim.core.mobsim.qsim.qnetsimengine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.VehicleEntersTrafficEvent;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.core.gbl.MatsimRandom;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimVehicle;
 import org.matsim.core.mobsim.qsim.interfaces.SignalGroupState;
 import org.matsim.core.mobsim.qsim.interfaces.SignalizeableItem;
@@ -118,8 +120,8 @@ public final class QLinkImpl extends AbstractQLink implements SignalizeableItem 
 	public boolean doSimStep() {
 		double now = context.getSimTimer().getTimeOfDay() ;
 		qlane.initBeforeSimStep();
-		
-		if ( context.qsimConfig.isInsertingWaitingVehiclesBeforeDrivingVehicles() ) {
+		Random random = MatsimRandom.getRandom();
+		if ( context.qsimConfig.getInsertingWaitingVehiclesBeforeDrivingVehiclesRatio() > random.nextDouble() ) {
 			this.moveWaitToRoad();
 			this.getTransitQLink().handleTransitVehiclesInStopQueue(now);
 			qlane.doSimStep();

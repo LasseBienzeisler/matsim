@@ -20,8 +20,6 @@
 
 package org.matsim.contrib.spatialDrt.firstLastAVPTRouter;
 
-import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.linkLinkTimes.LinkLinkTime;
-import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime.WaitLinkTime;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
@@ -29,7 +27,8 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.eventsBasedPTRouter.stopStopTimes.StopStopTime;
 import org.matsim.contrib.eventsBasedPTRouter.waitTimes.WaitTime;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
+import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.linkLinkTimes.LinkLinkTime;
+import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime.WaitLinkTime;
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.config.groups.TravelTimeCalculatorConfigGroup;
 import org.matsim.core.router.util.TravelDisutility;
@@ -139,6 +138,7 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 		int index = time/timeSlot<numSlots ? (int)(time/timeSlot) : (numSlots-1);
 		double length = wrapped.getLength()<3?3:wrapped.getLength();
 		if (wrapped.route != null)
+
 			return -(cachedTravelDisutility?cachedLinkTime:linkTravelTimes.get(wrapped.getId())[index])*params.marginalUtilityOfTravelTimePt_s
 					- link.getLength()*params.marginalUtilityOfTravelDistancePt_m;
 		else if (wrapped.toNode.route!=null && wrapped.toNode.line!=null)
@@ -181,6 +181,7 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 	public double getLinkMinimumTravelDisutility(Link link) {
 		return 0;
 	}
+
 
 	public double getAVTaxiTravelDisutility(Person person, Id<Link> linkA, Id<Link> linkB, double time) {
 		double travelTime = linkLinkTime.getLinkLinkTime(linkA, linkB, time);

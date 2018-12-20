@@ -1,11 +1,10 @@
-package org.matsim.contrib.protobuf;
 /* *********************************************************************** *
  * project: org.matsim.*
- *
+ * WaitTimeCalculator.java
  *                                                                         *
  * *********************************************************************** *
  *                                                                         *
- * copyright       : (C) 2014 by the members listed in the COPYING,        *
+ * copyright       : (C) 2012 by the members listed in the COPYING,        *
  *                   LICENSE and WARRANTY file.                            *
  * email           : info at matsim dot org                                *
  *                                                                         *
@@ -19,37 +18,50 @@ package org.matsim.contrib.protobuf;
  *                                                                         *
  * *********************************************************************** */
 
-import org.matsim.api.core.v01.events.Event;
-import org.matsim.contrib.protobuf.events.ProtobufEvents;
-import org.matsim.core.events.handler.BasicEventHandler;
+package org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitTimes;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.matsim.contrib.eventsBasedPTRouter.waitTimes.WaitTimeData;
 
 /**
- * Created by laemmel on 17/02/16.
+ * Array implementation of the structure for saving wait times
+ * 
+ * @author sergioo
  */
-public class ProtoEventsWriter implements BasicEventHandler{
 
-	private final FileOutputStream fos;
+public class WorstWaitTimeDataArray implements WaitTimeData {
 
-	public ProtoEventsWriter(FileOutputStream fos) {
-		this.fos = fos;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	//Attributes
+	private double[] worstWaitTimes;
+
+	//Constructors
+	public WorstWaitTimeDataArray(int numSlots) {
+		worstWaitTimes = new double[numSlots];
+		resetWaitTimes();
 	}
 
-
+	//Methods
 	@Override
-	public void handleEvent(Event event) {
-		ProtobufEvents.Event pe = Event2ProtoEvent.getProtoEvent(event);
-		try {
-			pe.writeDelimitedTo(this.fos);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	public void resetWaitTimes() {
+		for(int i = 0; i< worstWaitTimes.length; i++) {
+			worstWaitTimes[i] = 0;
 		}
 	}
-
 	@Override
-	public void reset(int iteration) {
-
+	public synchronized void addWaitTime(int timeSlot, double waitTime) {
+		if(waitTime>worstWaitTimes[timeSlot])
+			worstWaitTimes[timeSlot] = waitTime;
 	}
+	@Override
+	public double getWaitTime(int timeSlot) {
+		return worstWaitTimes[timeSlot< worstWaitTimes.length?timeSlot:(worstWaitTimes.length-1)];
+	}
+	@Override
+	public int getNumData(int timeSlot) {
+		return worstWaitTimes[timeSlot]==0?0:1;
+	}
+
 }
