@@ -29,7 +29,7 @@ public interface DriveTask extends Task {
 	VrpPath getPath();
 
 	/**
-	 * Vehicle changes its path. Just replaces the previous VrpPath with this one; this will work (if consistent) since
+	 * vehicle changes its path. Just replaces the previous VrpPath with this one; this will work (if consistent) since
 	 * (1) nobody (hopefully) caches a references to the original path, and (2) access to the link on the path is via
 	 * index only (and not via an iterator or similar). <br/>
 	 * <br/>

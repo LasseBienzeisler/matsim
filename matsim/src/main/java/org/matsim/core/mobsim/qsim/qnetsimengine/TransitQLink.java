@@ -141,7 +141,7 @@ final class TransitQLink {
     /**
      * @author dstrippgen
      *
-     * Comparator object, to sort the Vehicle objects in QueueLink.parkingList
+     * Comparator object, to sort the vehicle objects in QueueLink.parkingList
      * according to their departure time
      */
     static class QVehicleEarliestLinkExitTimeComparator implements Comparator<QVehicle>,

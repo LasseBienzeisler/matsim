@@ -24,7 +24,7 @@ import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.components.QSimComponents;
 
 /**
- * Enables basic DynAgent functionality in QSim. However, for DVRP simulation, use DvrpQSimModule instead.
+ * Enables basic dynAgent functionality in QSim. However, for DVRP simulation, use DvrpQSimModule instead.
  */
 public class DynQSimModule extends AbstractQSimModule {
 	public final static String DYN_AGENT_SOURCE_NAME = "DynAgentSource";

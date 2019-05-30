@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_bicycle" default="compile.module.bicycle">
+  <dirname property="module.bicycle.basedir" file="${ant.file.module_bicycle}"/>
+  
+  <property name="module.jdk.home.bicycle" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.bicycle" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.bicycle" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.bicycle" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="bicycle.output.dir" value="${module.bicycle.basedir}/target/classes"/>
+  <property name="bicycle.testoutput.dir" value="${module.bicycle.basedir}/target/test-classes"/>
+  
+  <path id="bicycle.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="bicycle.module.production.classpath">
+    <path refid="${module.jdk.classpath.bicycle}"/>
+    <path refid="library.maven:_org.geotools:gt-geotiff:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-coverage:14.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-zonalstats:1.4.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-utils:1.4.0.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.affine:jt-affine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.iterators:jt-iterators:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.utilities:jt-utilities:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.scale:jt-scale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.translate:jt-translate:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.algebra:jt-algebra:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandselect:jt-bandselect:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.border:jt-border:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.buffer:jt-buffer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.crop:jt-crop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.lookup:jt-lookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.mosaic:jt-mosaic:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.nullop:jt-nullop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rescale:jt-rescale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.stats:jt-stats:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.warp:jt-warp:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.zonal:jt-zonal:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.binarize:jt-binarize:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.format:jt-format:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.orderdither:jt-orderdither:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.piecewise:jt-piecewise:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.classifier:jt-classifier:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rlookup:jt-rlookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.0.6.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_javax.media:jai_imageio:1.1.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-geocore:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-streams:1.1.12.classpath"/>
+    <path refid="library.maven:_javax.media:jai_codec:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="bicycle.runtime.production.module.classpath">
+    <pathelement location="${bicycle.output.dir}"/>
+    <path refid="library.maven:_org.geotools:gt-geotiff:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-coverage:14.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-zonalstats:1.4.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-utils:1.4.0.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.affine:jt-affine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.iterators:jt-iterators:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.utilities:jt-utilities:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.scale:jt-scale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.translate:jt-translate:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.algebra:jt-algebra:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandselect:jt-bandselect:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.border:jt-border:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.buffer:jt-buffer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.crop:jt-crop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.lookup:jt-lookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.mosaic:jt-mosaic:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.nullop:jt-nullop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rescale:jt-rescale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.stats:jt-stats:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.warp:jt-warp:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.zonal:jt-zonal:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.binarize:jt-binarize:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.format:jt-format:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.orderdither:jt-orderdither:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.piecewise:jt-piecewise:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.classifier:jt-classifier:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rlookup:jt-rlookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.0.6.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_javax.media:jai_imageio:1.1.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-geocore:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-streams:1.1.12.classpath"/>
+    <path refid="library.maven:_javax.media:jai_codec:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="matsim.runtime.production.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="bicycle.module.classpath">
+    <path refid="${module.jdk.classpath.bicycle}"/>
+    <pathelement location="${bicycle.output.dir}"/>
+    <path refid="library.maven:_org.geotools:gt-geotiff:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-coverage:14.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-zonalstats:1.4.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-utils:1.4.0.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.affine:jt-affine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.iterators:jt-iterators:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.utilities:jt-utilities:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.scale:jt-scale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.translate:jt-translate:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.algebra:jt-algebra:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandselect:jt-bandselect:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.border:jt-border:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.buffer:jt-buffer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.crop:jt-crop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.lookup:jt-lookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.mosaic:jt-mosaic:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.nullop:jt-nullop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rescale:jt-rescale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.stats:jt-stats:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.warp:jt-warp:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.zonal:jt-zonal:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.binarize:jt-binarize:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.format:jt-format:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.orderdither:jt-orderdither:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.piecewise:jt-piecewise:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.classifier:jt-classifier:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rlookup:jt-rlookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.0.6.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_javax.media:jai_imageio:1.1.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-geocore:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-streams:1.1.12.classpath"/>
+    <path refid="library.maven:_javax.media:jai_codec:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="bicycle.runtime.module.classpath">
+    <pathelement location="${bicycle.testoutput.dir}"/>
+    <pathelement location="${bicycle.output.dir}"/>
+    <path refid="library.maven:_org.geotools:gt-geotiff:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-coverage:14.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-zonalstats:1.4.0.classpath"/>
+    <path refid="library.maven:_org.jaitools:jt-utils:1.4.0.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.affine:jt-affine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.iterators:jt-iterators:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.utilities:jt-utilities:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.scale:jt-scale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.translate:jt-translate:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.algebra:jt-algebra:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandselect:jt-bandselect:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.border:jt-border:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.buffer:jt-buffer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.crop:jt-crop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.lookup:jt-lookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.mosaic:jt-mosaic:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.nullop:jt-nullop:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rescale:jt-rescale:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.stats:jt-stats:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.warp:jt-warp:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.zonal:jt-zonal:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.binarize:jt-binarize:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.format:jt-format:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.orderdither:jt-orderdither:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.piecewise:jt-piecewise:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.classifier:jt-classifier:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.rlookup:jt-rlookup:1.0.6.classpath"/>
+    <path refid="library.maven:_it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.0.6.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_javax.media:jai_imageio:1.1.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-geocore:1.1.12.classpath"/>
+    <path refid="library.maven:_it.geosolutions.imageio-ext:imageio-ext-streams:1.1.12.classpath"/>
+    <path refid="library.maven:_javax.media:jai_codec:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim.runtime.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.bicycle">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.bicycle">
+    <patternset refid="excluded.from.module.bicycle"/>
+  </patternset>
+  
+  <path id="bicycle.module.sourcepath">
+    <dirset dir="${module.bicycle.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="bicycle.module.test.sourcepath">
+    <dirset dir="${module.bicycle.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.bicycle" depends="compile.module.bicycle.production,compile.module.bicycle.tests" description="Compile module bicycle"/>
+  
+  <target name="compile.module.bicycle.production" depends="register.custom.compilers,compile.module.matsim" description="Compile module bicycle; production classes">
+    <mkdir dir="${bicycle.output.dir}"/>
+    <javac2 destdir="${bicycle.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bicycle}/javac">
+      <compilerarg line="${compiler.args.bicycle}"/>
+      <bootclasspath refid="bicycle.module.bootclasspath"/>
+      <classpath refid="bicycle.module.production.classpath"/>
+      <src refid="bicycle.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bicycle"/>
+    </javac2>
+    
+    <copy todir="${bicycle.output.dir}">
+      <fileset dir="${module.bicycle.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.bicycle.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.bicycle.tests" depends="register.custom.compilers,compile.module.bicycle.production" description="compile module bicycle; test classes" unless="skip.tests">
+    <mkdir dir="${bicycle.testoutput.dir}"/>
+    <javac2 destdir="${bicycle.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bicycle}/javac">
+      <compilerarg line="${compiler.args.bicycle}"/>
+      <bootclasspath refid="bicycle.module.bootclasspath"/>
+      <classpath refid="bicycle.module.classpath"/>
+      <src refid="bicycle.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bicycle"/>
+    </javac2>
+    
+    <copy todir="${bicycle.testoutput.dir}">
+      <fileset dir="${module.bicycle.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.bicycle" description="cleanup module">
+    <delete dir="${bicycle.output.dir}"/>
+    <delete dir="${bicycle.testoutput.dir}"/>
+  </target>
+</project>

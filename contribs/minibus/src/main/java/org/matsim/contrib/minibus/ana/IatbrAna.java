@@ -47,7 +47,7 @@ import java.util.TreeSet;
  * <li> Number of trips served by train
  * <li> Number of minibuses which serve at least one trip
  * <li> Kilometer traveled by all minibuses
- * <li> Passenger kilometer served by minibuses
+ * <li> passenger kilometer served by minibuses
  * <li> Number of passengers using train and minibus service
  * 
  * @author aneumann

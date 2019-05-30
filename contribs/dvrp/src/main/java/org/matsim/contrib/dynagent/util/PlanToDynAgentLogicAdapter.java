@@ -26,7 +26,7 @@ import org.matsim.contrib.dynagent.*;
 import org.matsim.core.population.routes.NetworkRoute;
 
 /**
- * This class could be useful for jUnit testing of compatibility of DynAgent with PersonDriverAgentImpl (i.e. comparing
+ * This class could be useful for jUnit testing of compatibility of dynAgent with PersonDriverAgentImpl (i.e. comparing
  * events thrown during 2 different QSims, one with {@code PlanToDynAgentLogicAdapter} while the other with
  * {@code PersonDriverAgentImpl}).
  * 

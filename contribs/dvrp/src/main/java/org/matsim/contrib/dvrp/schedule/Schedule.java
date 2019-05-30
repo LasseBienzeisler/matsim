@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A Schedule contains Tasks. <br/>
+ * A schedule contains Tasks. <br/>
  * <br/>
  * Design comments:
  * <ul>
@@ -69,24 +69,24 @@ public interface Schedule {
 	ScheduleStatus getStatus();
 
 	/**
-	 * Returns the begin time of the initial task, or fails if the Schedule is unplanned.
+	 * Returns the begin time of the initial task, or fails if the schedule is unplanned.
 	 */
 	double getBeginTime();
 
 	/**
-	 * Returns the end time of the final task, or fails if the Schedule is unplanned.
+	 * Returns the end time of the final task, or fails if the schedule is unplanned.
 	 */
 	double getEndTime();
 
 	// schedule modification functionality:
 
 	/**
-	 * Add a Task to the Schedule.
+	 * Add a Task to the schedule.
 	 */
 	void addTask(Task task);
 
 	/**
-	 * Insert a Task into the Schedule at the specified position. The method should re-set all task indices of those
+	 * Insert a Task into the schedule at the specified position. The method should re-set all task indices of those
 	 * tasks that are moved.
 	 */
 	void addTask(int taskIdx, Task task);
@@ -97,14 +97,14 @@ public interface Schedule {
 	void removeLastTask();
 
 	/**
-	 * Remove a Task from the Schedule at the specified position. The method should re-set all task indices of those
+	 * Remove a Task from the schedule at the specified position. The method should re-set all task indices of those
 	 * tasks that are moved.
 	 */
 	void removeTask(Task task);
 
 	/**
 	 * This behaves a bit like it.next() in collections: It moves to the next task, makes it the current one, and
-	 * returns it. If no task is left, it sets the Schedule to completed and returns null.
+	 * returns it. If no task is left, it sets the schedule to completed and returns null.
 	 */
 	Task nextTask();// this one seems synchronous (will be executed when switching between DynActions)
 }

@@ -49,7 +49,7 @@
  * see {@link org.matsim.contrib.emissions.utils.EmissionsConfigGroup EmissionsConfigGroup}. The following information is surrounded by {@link org.matsim.contrib.emissions.utils.EmissionSpecificationMarker EmissionSpecificationMarker}. It is described as "definition of a vehicle
  *  for every person (who is allowed to choose a vehicle in the simulation):
  *  <ul>
- *  <li> REQUIRED: Vehicle description must start with the respective HbefaVehicleCategory followed by ";"
+ *  <li> REQUIRED: vehicle description must start with the respective HbefaVehicleCategory followed by ";"
  *  <li> OPTIONAL: If detailed emission calculation is switched on, the vehicle type Id should additionally contain
  *  HbefaVehicleAttributes ("Technology;SizeClasse;EmConcept"), corresponding to the strings in detailedWarmEmissionFactorsFile (see below) </li>
  * </ul>

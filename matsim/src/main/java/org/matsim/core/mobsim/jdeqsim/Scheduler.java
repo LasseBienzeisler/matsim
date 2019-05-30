@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.matsim.core.gbl.Gbl;
 
 /**
- * The scheduler of the micro-simulation.
+ * The org.matsim.contrib.spatialDrt.scheduler of the micro-simulation.
  *
  * @author rashid_waraich
  */

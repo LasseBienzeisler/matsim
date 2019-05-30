@@ -223,7 +223,7 @@ public class ControlerIT {
 		strat.setStrategyName(DefaultStrategy.ReRoute.toString());
 		strat.setWeight(1.);
 		config.strategy().addStrategySettings(strat);
-		// Run the simulation again
+		// run the simulation again
 		controler = new Controler(f.scenario);
 		controler.run();
 

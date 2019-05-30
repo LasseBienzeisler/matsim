@@ -72,7 +72,7 @@ public class RandomizingTransitRouterIT {
 		
 		void printCounts() {
 			for ( Entry<Id<Vehicle>, Double> entry : cnts.entrySet() ) {
-				log.info( "Vehicle id: " + entry.getKey() + "; number of boards: " + entry.getValue() ) ;
+				log.info( "vehicle id: " + entry.getKey() + "; number of boards: " + entry.getValue() ) ;
 			}
 		}
 		

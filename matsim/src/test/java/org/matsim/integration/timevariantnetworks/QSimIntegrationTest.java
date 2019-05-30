@@ -164,7 +164,7 @@ public class QSimIntegrationTest extends MatsimTestCase {
 		}
 		Person person2 = persons2.get(personsPerWave - 1);
 		/*
-		 * Run the simulation with the time-variant network and the two waves of
+		 * run the simulation with the time-variant network and the two waves of
 		 * persons. Observe the last person of each wave.
 		 */
 		EventsManager events = EventsUtils.createEventsManager();
@@ -229,7 +229,7 @@ public class QSimIntegrationTest extends MatsimTestCase {
 		}
 
 		/*
-		 * Run the simulation with the time-variant network and the two waves of
+		 * run the simulation with the time-variant network and the two waves of
 		 * persons. Observe the last person of each wave.
 		 */
 		EventsManager events = EventsUtils.createEventsManager();

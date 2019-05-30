@@ -220,9 +220,9 @@ public abstract class TransitScheduleValidator {
 	
 	public static void printResult(final ValidationResult result) {
 		if (result.isValid()) {
-			System.out.println("Schedule appears valid!");
+			System.out.println("schedule appears valid!");
 		} else {
-			System.out.println("Schedule is NOT valid!");
+			System.out.println("schedule is NOT valid!");
 		}
 		if (result.getErrors().size() > 0) {
 			System.out.println("Validation errors:");

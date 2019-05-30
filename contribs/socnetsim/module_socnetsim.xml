@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_socnetsim" default="compile.module.socnetsim">
+  <dirname property="module.socnetsim.basedir" file="${ant.file.module_socnetsim}"/>
+  
+  <property name="module.jdk.home.socnetsim" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.socnetsim" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.socnetsim" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.socnetsim" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="socnetsim.output.dir" value="${module.socnetsim.basedir}/target/classes"/>
+  <property name="socnetsim.testoutput.dir" value="${module.socnetsim.basedir}/target/test-classes"/>
+  
+  <path id="socnetsim.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="socnetsim.module.production.classpath">
+    <path refid="${module.jdk.classpath.socnetsim}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="socnetsim.runtime.production.module.classpath">
+    <pathelement location="${socnetsim.output.dir}"/>
+    <path refid="matsim.runtime.production.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="socnetsim.module.classpath">
+    <path refid="${module.jdk.classpath.socnetsim}"/>
+    <pathelement location="${socnetsim.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="socnetsim.runtime.module.classpath">
+    <pathelement location="${socnetsim.testoutput.dir}"/>
+    <pathelement location="${socnetsim.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim.runtime.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.socnetsim">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.socnetsim">
+    <patternset refid="excluded.from.module.socnetsim"/>
+  </patternset>
+  
+  <path id="socnetsim.module.sourcepath">
+    <dirset dir="${module.socnetsim.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="socnetsim.module.test.sourcepath">
+    <dirset dir="${module.socnetsim.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.socnetsim" depends="compile.module.socnetsim.production,compile.module.socnetsim.tests" description="Compile module socnetsim"/>
+  
+  <target name="compile.module.socnetsim.production" depends="register.custom.compilers,compile.module.matsim" description="Compile module socnetsim; production classes">
+    <mkdir dir="${socnetsim.output.dir}"/>
+    <javac2 destdir="${socnetsim.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.socnetsim}/javac">
+      <compilerarg line="${compiler.args.socnetsim}"/>
+      <bootclasspath refid="socnetsim.module.bootclasspath"/>
+      <classpath refid="socnetsim.module.production.classpath"/>
+      <src refid="socnetsim.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.socnetsim"/>
+    </javac2>
+    
+    <copy todir="${socnetsim.output.dir}">
+      <fileset dir="${module.socnetsim.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.socnetsim.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.socnetsim.tests" depends="register.custom.compilers,compile.module.socnetsim.production" description="compile module socnetsim; test classes" unless="skip.tests">
+    <mkdir dir="${socnetsim.testoutput.dir}"/>
+    <javac2 destdir="${socnetsim.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.socnetsim}/javac">
+      <compilerarg line="${compiler.args.socnetsim}"/>
+      <bootclasspath refid="socnetsim.module.bootclasspath"/>
+      <classpath refid="socnetsim.module.classpath"/>
+      <src refid="socnetsim.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.socnetsim"/>
+    </javac2>
+    
+    <copy todir="${socnetsim.testoutput.dir}">
+      <fileset dir="${module.socnetsim.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.socnetsim" description="cleanup module">
+    <delete dir="${socnetsim.output.dir}"/>
+    <delete dir="${socnetsim.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_emissions" default="compile.module.emissions">
+  <dirname property="module.emissions.basedir" file="${ant.file.module_emissions}"/>
+  
+  <property name="module.jdk.home.emissions" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.emissions" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.emissions" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.emissions" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="emissions.output.dir" value="${module.emissions.basedir}/target/classes"/>
+  <property name="emissions.testoutput.dir" value="${module.emissions.basedir}/target/test-classes"/>
+  
+  <path id="emissions.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="emissions.module.production.classpath">
+    <path refid="${module.jdk.classpath.emissions}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="emissions.runtime.production.module.classpath">
+    <pathelement location="${emissions.output.dir}"/>
+    <path refid="matsim.runtime.production.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="emissions.module.classpath">
+    <path refid="${module.jdk.classpath.emissions}"/>
+    <pathelement location="${emissions.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="emissions.runtime.module.classpath">
+    <pathelement location="${emissions.testoutput.dir}"/>
+    <pathelement location="${emissions.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim.runtime.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.emissions">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.emissions">
+    <patternset refid="excluded.from.module.emissions"/>
+  </patternset>
+  
+  <path id="emissions.module.sourcepath">
+    <dirset dir="${module.emissions.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  <path id="emissions.module.test.sourcepath">
+    <dirset dir="${module.emissions.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.emissions" depends="compile.module.emissions.production,compile.module.emissions.tests" description="Compile module emissions"/>
+  
+  <target name="compile.module.emissions.production" depends="register.custom.compilers,compile.module.matsim" description="Compile module emissions; production classes">
+    <mkdir dir="${emissions.output.dir}"/>
+    <javac2 destdir="${emissions.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.emissions}/javac">
+      <compilerarg line="${compiler.args.emissions}"/>
+      <bootclasspath refid="emissions.module.bootclasspath"/>
+      <classpath refid="emissions.module.production.classpath"/>
+      <src refid="emissions.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.emissions"/>
+    </javac2>
+    
+    <copy todir="${emissions.output.dir}">
+      <fileset dir="${module.emissions.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.emissions.tests" depends="register.custom.compilers,compile.module.emissions.production" description="compile module emissions; test classes" unless="skip.tests">
+    <mkdir dir="${emissions.testoutput.dir}"/>
+    <javac2 destdir="${emissions.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.emissions}/javac">
+      <compilerarg line="${compiler.args.emissions}"/>
+      <bootclasspath refid="emissions.module.bootclasspath"/>
+      <classpath refid="emissions.module.classpath"/>
+      <src refid="emissions.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.emissions"/>
+    </javac2>
+    
+    <copy todir="${emissions.testoutput.dir}">
+      <fileset dir="${module.emissions.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.emissions" description="cleanup module">
+    <delete dir="${emissions.output.dir}"/>
+    <delete dir="${emissions.testoutput.dir}"/>
+  </target>
+</project>

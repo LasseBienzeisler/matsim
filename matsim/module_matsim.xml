@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_matsim" default="compile.module.matsim">
+  <dirname property="module.matsim.basedir" file="${ant.file.module_matsim}"/>
+  
+  <property name="module.jdk.home.matsim" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.matsim" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.matsim" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.matsim" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="matsim.output.dir" value="${module.matsim.basedir}/target/classes"/>
+  <property name="matsim.testoutput.dir" value="${module.matsim.basedir}/target/test-classes"/>
+  
+  <path id="matsim.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="matsim.module.production.classpath">
+    <path refid="${module.jdk.classpath.matsim}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="matsim.runtime.production.module.classpath">
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="matsim.module.classpath">
+    <path refid="${module.jdk.classpath.matsim}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_pl.pragmatists:junitparams:1.1.0.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim-examples.testoutput.dir}"/>
+    <pathelement location="${matsim-examples.output.dir}"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="matsim.runtime.module.classpath">
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_pl.pragmatists:junitparams:1.1.0.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim-examples.runtime.module.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.matsim">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.matsim">
+    <patternset refid="excluded.from.module.matsim"/>
+  </patternset>
+  
+  <path id="matsim.module.sourcepath">
+    <dirset dir="${module.matsim.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="matsim.module.test.sourcepath">
+    <dirset dir="${module.matsim.basedir}">
+      <include name="src/test/java"/>
+      <include name="src/test/resources"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.matsim" depends="compile.module.matsim.production,compile.module.matsim.tests" description="Compile module matsim"/>
+  
+  <target name="compile.module.matsim.production" depends="register.custom.compilers,compile.module.matsim-examples" description="Compile module matsim; production classes">
+    <mkdir dir="${matsim.output.dir}"/>
+    <javac2 destdir="${matsim.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.matsim}/javac">
+      <compilerarg line="${compiler.args.matsim}"/>
+      <bootclasspath refid="matsim.module.bootclasspath"/>
+      <classpath refid="matsim.module.production.classpath"/>
+      <src refid="matsim.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.matsim"/>
+    </javac2>
+    
+    <copy todir="${matsim.output.dir}">
+      <fileset dir="${module.matsim.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.matsim.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.matsim.tests" depends="register.custom.compilers,compile.module.matsim.production" description="compile module matsim; test classes" unless="skip.tests">
+    <mkdir dir="${matsim.testoutput.dir}"/>
+    <javac2 destdir="${matsim.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.matsim}/javac">
+      <compilerarg line="${compiler.args.matsim}"/>
+      <bootclasspath refid="matsim.module.bootclasspath"/>
+      <classpath refid="matsim.module.classpath"/>
+      <src refid="matsim.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.matsim"/>
+    </javac2>
+    
+    <copy todir="${matsim.testoutput.dir}">
+      <fileset dir="${module.matsim.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.matsim.basedir}/src/test/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.matsim" description="cleanup module">
+    <delete dir="${matsim.output.dir}"/>
+    <delete dir="${matsim.testoutput.dir}"/>
+  </target>
+</project>

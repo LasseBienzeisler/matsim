@@ -106,7 +106,7 @@ public class ScheduleImpl implements Schedule {
 			Task previousTask = tasks.get(taskIdx - 1);
 
 			if (previousTask.getEndTime() != beginTime) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException(previousTask.toString() + "previous end time: " +  previousTask.getEndTime() + ", current begin time: " + beginTime);
 			}
 
 			if (Tasks.getEndLink(previousTask) != beginLink) {

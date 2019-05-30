@@ -192,7 +192,7 @@ public final class DynAgent implements MobsimDriverPassengerAgent {
 		return dynActivity.getEndTime();
 	}
 
-	// DynAgent
+	// dynAgent
 	public void doSimStep(double now) {
 		dynActivity.doSimStep(now);
 	}

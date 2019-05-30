@@ -39,7 +39,7 @@ public class HouseholdsAlgorithmRunner {
 	private final List<HouseholdAlgorithm> householdAlgorithms = new ArrayList<HouseholdAlgorithm>();
 
 	/**
-	 * Run all the algorithms added to the container. 
+	 * run all the algorithms added to the container.
 	 */
 	public final void runAlgorithms(Households hh){
 			for(int i = 0; i < this.householdAlgorithms.size(); i++){

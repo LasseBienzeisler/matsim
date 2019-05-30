@@ -154,7 +154,7 @@ public final class EventsConverterXML extends MatsimXmlParser{
 
 				// create a vehicle leaves traffic event if it is missing
 				if (driverToVeh.containsKey(personId) && !this.containsVehicleLeavesTrafficEvents){
-//					Id<Vehicle> vehicleIdOfDriver = driverToVeh.get(personId);
+//					Id<vehicle> vehicleIdOfDriver = driverToVeh.get(personId);
 					// remove the person-car-mapping, otherwise every following (even non-vehicle) leg produces leave traffic/vehicle events 
 					Id<Vehicle> vehicleIdOfDriver = driverToVeh.remove(personId); 
 

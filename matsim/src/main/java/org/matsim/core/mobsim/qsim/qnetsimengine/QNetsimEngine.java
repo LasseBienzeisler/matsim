@@ -459,7 +459,7 @@ public class QNetsimEngine implements MobsimEngine, NetsimEngine {
 	}
 
 	/*
-	 * Within the MoveThreads Links are only activated when a Vehicle is moved
+	 * Within the MoveThreads Links are only activated when a vehicle is moved
 	 * over a Node which is processed by that Thread. So we can assign each QLink
 	 * to the Thread that handles its InNode.
 	 */

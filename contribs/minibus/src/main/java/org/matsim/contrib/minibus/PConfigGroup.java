@@ -390,7 +390,7 @@ public final class PConfigGroup extends ConfigGroup{
 		map.put(NUMBER_OF_ITERATIONS_FOR_PROSPECTING, "number of iterations an operator will survive with a negative scoring");
 		map.put(INITIAL_BUDGET, "The budget a new operator is initialized with");
 		map.put(PAX_PER_VEHICLE, "number of passengers per vehicle");
-		map.put(PCE, "Passenger car equilvalents of one paratransit vehicle");
+		map.put(PCE, "passenger car equilvalents of one paratransit vehicle");
 		map.put(VEHICLE_MAXIMUM_VELOCITY, "Maximum velocity of minibuses. Default is Double.POSITIVE_INFINITY.");
 		map.put(DELAY_PER_BOARDING_PASSENGER, "The amount of time a vehicle is delayed by one single boarding passenger in seconds.");
 		map.put(DELAY_PER_ALIGHTING_PASSENGER, "The amount of time a vehicle is delayed by one single alighting passenger in seconds.");

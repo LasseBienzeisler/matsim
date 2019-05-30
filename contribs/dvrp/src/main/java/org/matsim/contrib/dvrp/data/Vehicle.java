@@ -22,11 +22,12 @@ package org.matsim.contrib.dvrp.data;
 import org.matsim.api.core.v01.Identifiable;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.schedule.Schedule;
+import org.matsim.utils.objectattributes.attributable.Attributable;
 
 /**
  * @author michalm
  */
-public interface Vehicle extends Identifiable<Vehicle> {
+public interface Vehicle extends Identifiable<Vehicle>, Attributable {
 
 	/**
 	 * @return the link at which vehicle starts operating (i.e. depot)
@@ -55,14 +56,15 @@ public interface Vehicle extends Identifiable<Vehicle> {
 	/**
 	 * Design comment(s):
 	 * <ul>
-	 * <li>Typically, the Schedule is meant to be changed only by the optimizer. Note, however, that the present design
+	 * <li>Typically, the schedule is meant to be changed only by the optimizer. Note, however, that the present design
 	 * does not prevent other classes to change it, so be careful. kai, feb'17
 	 * </ul>
 	 */
 	Schedule getSchedule();
 
 	/**
-	 * Resets the schedule. For instance, by creating a new Schedule object.
+	 * Resets the schedule. For instance, by creating a new schedule object.
 	 */
 	void resetSchedule();
+
 }

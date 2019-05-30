@@ -34,7 +34,7 @@
 //import org.matsim.contrib.minibus.scoring.PScoreContainer;
 //import org.matsim.pt.transitSchedule.api.TransitLine;
 //import org.matsim.pt.transitSchedule.api.TransitRoute;
-//import org.matsim.vehicles.Vehicle;
+//import org.matsim.vehicles.vehicle;
 //
 ///**
 // * @author ikaddoura, dhosse
@@ -73,7 +73,7 @@
 //	}
 //
 //	@Override
-//	public void score(Map<Id<Vehicle>, PScoreContainer> driverId2ScoreMap) {
+//	public void score(Map<Id<vehicle>, PScoreContainer> driverId2ScoreMap) {
 //				
 //		delegate.setScoreLastIteration(delegate.getScore());
 //		delegate.setScore(0);

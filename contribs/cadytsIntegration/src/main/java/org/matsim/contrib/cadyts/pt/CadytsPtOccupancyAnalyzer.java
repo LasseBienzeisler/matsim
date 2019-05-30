@@ -111,7 +111,7 @@ public class CadytsPtOccupancyAnalyzer implements CadytsPtOccupancyAnalyzerI {
 		double time = event.getTime();
 		Integer nPassengers = this.vehPassengers.get(vehId);
 		this.vehPassengers.put(vehId, (nPassengers != null) ? (nPassengers + 1) : 1);
-		this.occupancyRecord.append("time :\t").append(time).append(" veh :\t").append(vehId).append(" has Passenger\t").append(this.vehPassengers.get(vehId)).append(" \tat stop :\t").append(stopId).append(" ENTERING PERSON :\t").append(event.getPersonId()).append("\n");
+		this.occupancyRecord.append("time :\t").append(time).append(" veh :\t").append(vehId).append(" has passenger\t").append(this.vehPassengers.get(vehId)).append(" \tat stop :\t").append(stopId).append(" ENTERING PERSON :\t").append(event.getPersonId()).append("\n");
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class CadytsPtOccupancyAnalyzer implements CadytsPtOccupancyAnalyzerI {
 			this.vehPassengers.remove(vehId);
 		}
 		Integer passengers = this.vehPassengers.get(vehId);
-		this.occupancyRecord.append("time :\t").append(time).append(" veh :\t").append(vehId).append(" has Passenger\t").append((passengers != null) ? passengers : 0).append("\n");
+		this.occupancyRecord.append("time :\t").append(time).append(" veh :\t").append(vehId).append(" has passenger\t").append((passengers != null) ? passengers : 0).append("\n");
 	}
 
 	@Override

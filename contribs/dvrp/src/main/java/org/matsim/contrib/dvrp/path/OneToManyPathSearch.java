@@ -62,14 +62,22 @@ public class OneToManyPathSearch {
 	public static class PathData {
 		final Path path;// shortest path
 		private final double firstAndLastLinkTT;// at both the first and last links
+		double pathDistance = 0.0;
 
 		public PathData(Path path, double firstAndLastLinkTT) {
 			this.path = new Path(null, ImmutableList.copyOf(path.links), path.travelTime, path.travelCost);
 			this.firstAndLastLinkTT = firstAndLastLinkTT;
+			for (Link link : path.links){
+				pathDistance += link.getLength();
+			}
 		}
 
 		public double getTravelTime() {
 			return path.travelTime + firstAndLastLinkTT;
+		}
+
+		public double getPathDistance(){
+			return pathDistance;
 		}
 	}
 

@@ -128,7 +128,7 @@ public class TransitLoad implements TransitDriverStartsEventHandler, VehicleArri
 		VehicleData vData = this.vehicleData.get(event.getVehicleId());
 		if (vData != null) {
 			List<StopInformation> siList = getStopInformation(vData.lineId, vData.routeId, this.vehicleFacilityMap.get(event.getVehicleId()), vData.departureId, true);
-			// Vehicle arrives at facility -> begin of serving the stop (once more) -> create new StopInformation
+			// vehicle arrives at facility -> begin of serving the stop (once more) -> create new StopInformation
 			StopInformation si = new StopInformation();
 			si.arrivalTime = event.getTime();
 			siList.add(si);
@@ -141,7 +141,7 @@ public class TransitLoad implements TransitDriverStartsEventHandler, VehicleArri
 		VehicleData vData = this.vehicleData.get(event.getVehicleId());
 		if (vData != null) {
 			List<StopInformation> siList = getStopInformation(vData.lineId, vData.routeId, stopId, vData.departureId, true);
-			// Vehicle is already at facility -> add information to last StopInformation
+			// vehicle is already at facility -> add information to last StopInformation
 			StopInformation si = siList.get(siList.size() - 1);
 			si.departureTime = event.getTime();
 		}
@@ -154,7 +154,7 @@ public class TransitLoad implements TransitDriverStartsEventHandler, VehicleArri
 			if (!vData.driverId.equals(event.getPersonId())) {
 				List<StopInformation> siList = getStopInformation(vData.lineId, vData.routeId,
 						this.vehicleFacilityMap.get(event.getVehicleId()), vData.departureId, true);
-				// Vehicle is already at facility -> add information to last StopInformation
+				// vehicle is already at facility -> add information to last StopInformation
 				StopInformation si = siList.get(siList.size() - 1);
 				si.nOfEntering++;
 			}
@@ -168,7 +168,7 @@ public class TransitLoad implements TransitDriverStartsEventHandler, VehicleArri
 			if (!vData.driverId.equals(event.getPersonId())) {
 				List<StopInformation> siList = getStopInformation(vData.lineId, vData.routeId,
 						this.vehicleFacilityMap.get(event.getVehicleId()), vData.departureId, true);
-				// Vehicle is already at facility -> add information to last StopInformation
+				// vehicle is already at facility -> add information to last StopInformation
 				StopInformation si = siList.get(siList.size() - 1);
 				si.nOfLeaving++;
 			}

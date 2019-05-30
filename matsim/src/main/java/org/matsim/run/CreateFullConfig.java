@@ -31,7 +31,7 @@ import org.matsim.core.utils.misc.ArgumentParser;
  * with all settings and their default values to a file.
  * Useful to get a list of available settings for many users.
  * <p></p>
- * Run as {@code java -cp .../matsim.jar org.matsim.run.CreateFullConfig config.xml} .
+ * run as {@code java -cp .../matsim.jar org.matsim.run.CreateFullConfig config.xml} .
  * <p></p>
  * An example from the development head can be found <a href="http://ci.matsim.org:8080/job/MATSim_M2/ws/matsim/test/output/org/matsim/run/CreateFullConfigTest/testMain/newConfig.xml">here</a>.
  * <p></p>

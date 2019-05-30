@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_dvrp" default="compile.module.dvrp">
+  <dirname property="module.dvrp.basedir" file="${ant.file.module_dvrp}"/>
+  
+  <property name="module.jdk.home.dvrp" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dvrp" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dvrp" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dvrp" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="dvrp.output.dir" value="${module.dvrp.basedir}/target/classes"/>
+  <property name="dvrp.testoutput.dir" value="${module.dvrp.basedir}/target/test-classes"/>
+  
+  <path id="dvrp.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dvrp.module.production.classpath">
+    <path refid="${module.jdk.classpath.dvrp}"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator-annotation-processor:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.el:3.0.1-b10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:24.1-jre.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_org.checkerframework:checker-compat-qual:2.0.0.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.1.3.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <pathelement location="${otfvis.output.dir}"/>
+    <path refid="library.maven:_net.java.dev.timingframework:timingframework:1.0.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jxmapviewer:jxmapviewer2:2.2.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <pathelement location="${locationchoice.output.dir}"/>
+    <path refid="library.maven:_org.apache.commons:commons-math3:3.6.1.classpath"/>
+    <path refid="library.maven:_com.opencsv:opencsv:4.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-text:1.1.classpath"/>
+    <path refid="library.maven:_commons-beanutils:commons-beanutils:1.9.3.classpath"/>
+    <path refid="library.maven:_commons-collections:commons-collections:3.2.2.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="dvrp.runtime.production.module.classpath">
+    <pathelement location="${dvrp.output.dir}"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator-annotation-processor:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.el:3.0.1-b10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:24.1-jre.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_org.checkerframework:checker-compat-qual:2.0.0.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.1.3.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="otfvis.runtime.production.module.classpath"/>
+    <path refid="library.maven:_net.java.dev.timingframework:timingframework:1.0.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jxmapviewer:jxmapviewer2:2.2.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <path refid="locationchoice.runtime.production.module.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-math3:3.6.1.classpath"/>
+    <path refid="library.maven:_com.opencsv:opencsv:4.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-text:1.1.classpath"/>
+    <path refid="library.maven:_commons-beanutils:commons-beanutils:1.9.3.classpath"/>
+    <path refid="library.maven:_commons-collections:commons-collections:3.2.2.classpath"/>
+    <path refid="matsim.runtime.production.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="dvrp.module.classpath">
+    <path refid="${module.jdk.classpath.dvrp}"/>
+    <pathelement location="${dvrp.output.dir}"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator-annotation-processor:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.el:3.0.1-b10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:24.1-jre.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_org.checkerframework:checker-compat-qual:2.0.0.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.1.3.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <pathelement location="${otfvis.testoutput.dir}"/>
+    <pathelement location="${otfvis.output.dir}"/>
+    <path refid="library.maven:_net.java.dev.timingframework:timingframework:1.0.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jxmapviewer:jxmapviewer2:2.2.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <pathelement location="${locationchoice.testoutput.dir}"/>
+    <pathelement location="${locationchoice.output.dir}"/>
+    <path refid="library.maven:_org.apache.commons:commons-math3:3.6.1.classpath"/>
+    <path refid="library.maven:_com.opencsv:opencsv:4.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-text:1.1.classpath"/>
+    <path refid="library.maven:_commons-beanutils:commons-beanutils:1.9.3.classpath"/>
+    <path refid="library.maven:_commons-collections:commons-collections:3.2.2.classpath"/>
+    <path refid="library.maven:_org.assertj:assertj-core:3.9.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="dvrp.runtime.module.classpath">
+    <pathelement location="${dvrp.testoutput.dir}"/>
+    <pathelement location="${dvrp.output.dir}"/>
+    <path refid="library.maven:_javax.validation:validation-api:2.0.1.final.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_org.hibernate.validator:hibernate-validator-annotation-processor:6.0.9.final.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.el:3.0.1-b10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.7.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:24.1-jre.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:jsr305:1.3.9.classpath"/>
+    <path refid="library.maven:_org.checkerframework:checker-compat-qual:2.0.0.classpath"/>
+    <path refid="library.maven:_com.google.errorprone:error_prone_annotations:2.1.3.classpath"/>
+    <path refid="library.maven:_com.google.j2objc:j2objc-annotations:1.1.classpath"/>
+    <path refid="library.maven:_org.codehaus.mojo:animal-sniffer-annotations:1.14.classpath"/>
+    <path refid="otfvis.runtime.module.classpath"/>
+    <path refid="library.maven:_net.java.dev.timingframework:timingframework:1.0.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.gluegen:gluegen-rt:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all-main:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-aarch64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-android-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-armv6hf:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-linux-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-macosx-universal:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-solaris-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-amd64:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jogamp.jogl:jogl-all:natives-windows-i586:2.3.2.classpath"/>
+    <path refid="library.maven:_org.jxmapviewer:jxmapviewer2:2.2.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <path refid="locationchoice.runtime.module.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-math3:3.6.1.classpath"/>
+    <path refid="library.maven:_com.opencsv:opencsv:4.0.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-text:1.1.classpath"/>
+    <path refid="library.maven:_commons-beanutils:commons-beanutils:1.9.3.classpath"/>
+    <path refid="library.maven:_commons-collections:commons-collections:3.2.2.classpath"/>
+    <path refid="library.maven:_org.assertj:assertj-core:3.9.1.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim.runtime.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dvrp">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dvrp">
+    <patternset refid="excluded.from.module.dvrp"/>
+  </patternset>
+  
+  <path id="dvrp.module.sourcepath">
+    <dirset dir="${module.dvrp.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="dvrp.module.test.sourcepath">
+    <dirset dir="${module.dvrp.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dvrp" depends="compile.module.dvrp.production,compile.module.dvrp.tests" description="Compile module dvrp"/>
+  
+  <target name="compile.module.dvrp.production" depends="register.custom.compilers,compile.module.otfvis,compile.module.locationchoice,compile.module.matsim" description="Compile module dvrp; production classes">
+    <mkdir dir="${dvrp.output.dir}"/>
+    <javac2 destdir="${dvrp.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dvrp}/javac">
+      <compilerarg line="${compiler.args.dvrp}"/>
+      <bootclasspath refid="dvrp.module.bootclasspath"/>
+      <classpath refid="dvrp.module.production.classpath"/>
+      <src refid="dvrp.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dvrp"/>
+    </javac2>
+    
+    <copy todir="${dvrp.output.dir}">
+      <fileset dir="${module.dvrp.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.dvrp.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dvrp.tests" depends="register.custom.compilers,compile.module.dvrp.production" description="compile module dvrp; test classes" unless="skip.tests">
+    <mkdir dir="${dvrp.testoutput.dir}"/>
+    <javac2 destdir="${dvrp.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dvrp}/javac">
+      <compilerarg line="${compiler.args.dvrp}"/>
+      <bootclasspath refid="dvrp.module.bootclasspath"/>
+      <classpath refid="dvrp.module.classpath"/>
+      <src refid="dvrp.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dvrp"/>
+    </javac2>
+    
+    <copy todir="${dvrp.testoutput.dir}">
+      <fileset dir="${module.dvrp.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.dvrp" description="cleanup module">
+    <delete dir="${dvrp.output.dir}"/>
+    <delete dir="${dvrp.testoutput.dir}"/>
+  </target>
+</project>

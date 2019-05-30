@@ -142,7 +142,7 @@ public class ParkedVehiclesVisualiser implements PersonEntersVehicleEventHandler
 	}
 	
 	public void plotCarPositions(String filename){
-		String head = "Vehicle;parkTime;unparkTime;LinkId;X;Y";
+		String head = "vehicle;parkTime;unparkTime;LinkId;X;Y";
 		BufferedWriter bw = IOUtils.getBufferedWriter(filename);
 		try {
 			bw.write(head);

@@ -77,7 +77,7 @@ public class JDEQSimulation implements Mobsim {
 		}
 
 		for (Person person : this.scenario.getPopulation().getPersons().values()) {
-			new Vehicle(scheduler, person, activityDurationInterpretation); // the vehicle registers itself to the scheduler
+			new Vehicle(scheduler, person, activityDurationInterpretation); // the vehicle registers itself to the org.matsim.contrib.spatialDrt.scheduler
 		}
 
 		scheduler.startSimulation();

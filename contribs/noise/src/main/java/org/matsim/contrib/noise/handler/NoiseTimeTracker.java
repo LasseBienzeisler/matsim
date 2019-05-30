@@ -119,7 +119,7 @@ public class NoiseTimeTracker implements PersonEntersVehicleEventHandler, LinkEn
 			} else {
 				if (cWarn2 == 0) {
 					log.warn("This noise computation approach does not account for transit vehicles other than road vehicles. "
-							+ "Vehicle " + event.getVehicleId() + " belonging to transit line " + event.getTransitLineId() + " will not be considered. "
+							+ "vehicle " + event.getVehicleId() + " belonging to transit line " + event.getTransitLineId() + " will not be considered. "
 							+ "This message is only given once");
 					cWarn2++;
 				}

@@ -34,7 +34,7 @@ import java.util.List;
  * This operator has multiple plans. Each is weighted by the number of vehicles associated with.
  * The number of vehicles depends on the score per vehicle and plan. In the end, each plan should have approximately the same score.
  * In contrast to {@link MultiPlanOperator}, this operator accepts all plans as blueprints for replanning, again picking one is a weighted random draw.
- * Vehicle are shifted away from plans instantly, i.e. if a plan scored negative at least one vehicle is removed.
+ * vehicle are shifted away from plans instantly, i.e. if a plan scored negative at least one vehicle is removed.
  * Vehicles are distributed to positive plans and new plans.
  * 
  * @author aneumann

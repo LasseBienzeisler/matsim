@@ -122,7 +122,7 @@ public class BicycleLinkScoring implements SumScoringFunction.ArbitraryEventScor
 		if (relativeLinkEnterPosition != 1.0) {
 			// Link link = scenario.getNetwork().getLinks().get(linkId);
 			// Person person = scenario.getPopulation().getPersons().get(vehicle2Driver.getDriverOfVehicle(vehId));
-			// Vehicle vehicle = scenario.getVehicles().getVehicles().get(vehId);
+			// vehicle vehicle = scenario.getVehicles().getVehicles().get(vehId);
 			
 			double carScoreOffset = -(this.carCountOnLink * 0.04);
 			this.score += carScoreOffset;

@@ -337,7 +337,7 @@ abstract class AbstractQLink implements QLinkI {
 		double now = context.getSimTimer().getTimeOfDay();
 		
 		MobsimDriverAgent driver = vehicle.getDriver();
-		if (driver == null) throw new RuntimeException("Vehicle cannot depart without a driver!");
+		if (driver == null) throw new RuntimeException("vehicle cannot depart without a driver!");
 
 		EventsManager eventsManager = context.getEventsManager();
 		eventsManager.processEvent(new PersonEntersVehicleEvent(now, driver.getId(), vehicle.getId()));
@@ -362,7 +362,7 @@ abstract class AbstractQLink implements QLinkI {
 		} else {
 			boolean added = vehicle.addPassenger((PassengerAgent) passenger);
 			if (!added) {
-				log.warn("Passenger " + passenger.getId().toString() +
+				log.warn("passenger " + passenger.getId().toString() +
 				" could not be inserted into vehicle " + vehicleId.toString() +
 				" since there is no free seat available!");
 				return false;

@@ -79,7 +79,7 @@ class JDEQSimEngine implements MobsimEngine, ActivityHandler {
     public void doSimStep(double time) {
         scheduler.doSimStep(time);
         // JDEQSim doesn't track agents going to sleep (they just don't produce a new action).
-        // So we ask the scheduler if the queue has run dry, and if so, we let all the agents
+        // So we ask the org.matsim.contrib.spatialDrt.scheduler if the queue has run dry, and if so, we let all the agents
         // for which we are responsible go to sleep at once.
         if (scheduler.isFinished()) {
             while (numberOfAgents > 0) {

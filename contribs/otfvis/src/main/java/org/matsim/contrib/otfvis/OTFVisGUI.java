@@ -110,7 +110,7 @@ public class OTFVisGUI extends JDialog implements ActionListener {
 				panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 				panel.add(new JLabel("Config File: "));
 				meinJDialog.addTextFieldButton(panel, "Config");
-				tabPane.addTab("Load & Run MATSIM Configuration", panel);
+				tabPane.addTab("Load & run MATSIM Configuration", panel);
 
 				// Fourth Tab convert an event file with optional playback
 				panel = meinJDialog.new ActionPanel(true) {

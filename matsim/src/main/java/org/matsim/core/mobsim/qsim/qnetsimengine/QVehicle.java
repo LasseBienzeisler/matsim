@@ -72,7 +72,7 @@ public class QVehicle extends QItem implements MobsimVehicle {
 		if (capacity == null) {
 			this.passengerCapacity = 4;
 			if (warnCount < 10) {
-				log.warn("No VehicleCapacity (= maximum number of passengers) set in Vehicle. "
+				log.warn("No VehicleCapacity (= maximum number of passengers) set in vehicle. "
 						+ "Using default value of 4.  This is only a problem if you need vehicles with different "
 						+ "capacities, e.g. for minibuses.");
 				warnCount++;
@@ -187,7 +187,7 @@ public class QVehicle extends QItem implements MobsimVehicle {
 
 	@Override
 	public String toString() {
-		return "Vehicle Id " + getId() + ", driven by (personId) " + this.driver.getId()
+		return "vehicle Id " + getId() + ", driven by (personId) " + this.driver.getId()
 				+ ", on link " + this.currentLink.getId();
 	}
 

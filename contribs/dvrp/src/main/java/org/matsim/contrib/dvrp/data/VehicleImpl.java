@@ -22,6 +22,7 @@ package org.matsim.contrib.dvrp.data;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.schedule.*;
+import org.matsim.utils.objectattributes.attributable.Attributes;
 
 /**
  * @author michalm
@@ -95,5 +96,10 @@ public class VehicleImpl implements Vehicle {
 	@Override
 	public void resetSchedule() {
 		schedule = new ScheduleImpl(this);
+	}
+
+	@Override
+	public Attributes getAttributes() {
+		return null;
 	}
 }

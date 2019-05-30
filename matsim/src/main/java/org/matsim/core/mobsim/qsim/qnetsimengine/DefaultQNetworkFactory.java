@@ -39,7 +39,7 @@ import org.matsim.vis.snapshotwriters.SnapshotLinkWidthCalculator;
 
 /**
  * The idea here is that there are the following levels:<ul>
- * <li> Run-specific objects, such as {@link QSimConfigGroup}, {@link EventsManager}, etc.  These are in general guice-injected, but can
+ * <li> run-specific objects, such as {@link QSimConfigGroup}, {@link EventsManager}, etc.  These are in general guice-injected, but can
  * also be configured by the constructor.  In the longer run, I would like to get rid of {@link Scenario}, but I haven't checked where
  * it us truly needed yet.
  * <li> Mobsim-specific objects, such as {@link AgentCounter} or {@link QNetsimEngine}.  Since the mobsim is re-created in every

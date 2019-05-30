@@ -304,7 +304,7 @@ public final class CreatePStopsOnJunctionApproachesAndBetweenJunctions{
 		Network newRoadNetwork = nfm.applyFilters();
 		new NetworkCleaner().run(newRoadNetwork);
 		
-		// Run Johan's intersection clustering algorithm
+		// run Johan's intersection clustering algorithm
 		IntersectionSimplifier ns = new IntersectionSimplifier(pmin, epsilon);
 		Network newClusteredIntersectionsRoadNetwork = ns.simplify(newRoadNetwork);
 		new NetworkCleaner().run(newClusteredIntersectionsRoadNetwork);

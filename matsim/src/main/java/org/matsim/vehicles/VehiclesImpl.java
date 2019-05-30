@@ -77,14 +77,14 @@ class VehiclesImpl implements Vehicles {
 	public void addVehicle(final Vehicle v) {
 		/* Validation. */
 		if(this.getVehicles().containsKey(v.getId())){
-			throw new IllegalArgumentException("Vehicle with id = " + v.getId() + " already exists.");
+			throw new IllegalArgumentException("vehicle with id = " + v.getId() + " already exists.");
 		}
 
 		/* Check if the VehicleType associated with the vehicle already exist.
 		 * Here only an error message is given. A RuntimeException is thrown
 		 * when the VehicleWriterV1 is called (JWJ, '14). */
 		if(!this.vehicleTypes.containsKey(v.getType().getId())){
-			throw new IllegalArgumentException("Cannot add Vehicle with type = " + v.getType().getId().toString() +
+			throw new IllegalArgumentException("Cannot add vehicle with type = " + v.getType().getId().toString() +
 					" if the VehicleType has not been added to the Vehicles container.");
 		}
 
@@ -114,7 +114,7 @@ class VehiclesImpl implements Vehicles {
 	public void addVehicleType(VehicleType type){
 		/* Validation. */
 		if(this.getVehicleTypes().containsKey(type.getId())){
-			throw new IllegalArgumentException("Vehicle type with id = " + type.getId() + " already exists.");
+			throw new IllegalArgumentException("vehicle type with id = " + type.getId() + " already exists.");
 		}
 
 		/* Add the vehicle type. */

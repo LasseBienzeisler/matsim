@@ -137,7 +137,7 @@ public class EmissionModule {
 		}
 
 //		if(scenario.getConfig().qsim().getVehiclesSource().equals(QSimConfigGroup.VehiclesSource.defaultVehicle)) {
-//			logger.warn("Vehicle source in the QSim is "+ QSimConfigGroup.VehiclesSource.defaultVehicle.name()+
+//			logger.warn("vehicle source in the QSim is "+ QSimConfigGroup.VehiclesSource.defaultVehicle.name()+
 //							", however a vehicle file or vehicle information is provided. \n" +
 //					"Therefore, switching to "+ QSimConfigGroup.VehiclesSource.fromVehiclesData.name()+".");
 //			scenario.getConfig().qsim().setVehiclesSource(QSimConfigGroup.VehiclesSource.fromVehiclesData);

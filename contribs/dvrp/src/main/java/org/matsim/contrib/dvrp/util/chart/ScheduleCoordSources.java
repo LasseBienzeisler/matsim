@@ -50,7 +50,7 @@ public class ScheduleCoordSources {
 		};
 	}
 
-	// Schedule -> n DriveTasks -> n+1 Links
+	// schedule -> n DriveTasks -> n+1 Links
 	public static CoordSource createCoordSource(Schedule schedule) {
 		List<DriveTask> driveTasks = Schedules.driveTasks(schedule).collect(Collectors.toList());
 		return ScheduleCoordSources.createCoordSource(driveTasks);

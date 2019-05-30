@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_pseudosimulation" default="compile.module.pseudosimulation">
+  <dirname property="module.pseudosimulation.basedir" file="${ant.file.module_pseudosimulation}"/>
+  
+  <property name="module.jdk.home.pseudosimulation" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.pseudosimulation" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.pseudosimulation" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.pseudosimulation" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="pseudosimulation.output.dir" value="${module.pseudosimulation.basedir}/target/classes"/>
+  <property name="pseudosimulation.testoutput.dir" value="${module.pseudosimulation.basedir}/target/test-classes"/>
+  
+  <path id="pseudosimulation.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="pseudosimulation.module.production.classpath">
+    <path refid="${module.jdk.classpath.pseudosimulation}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.maven:_org.apache.commons:commons-math:2.2.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.3.classpath"/>
+    <pathelement location="${eventsbasedptrouter.output.dir}"/>
+    <path refid="library.maven:_commons-cli:commons-cli:1.0.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.0.classpath"/>
+    <path refid="library.maven:_colt:colt:1.2.0.classpath"/>
+    <path refid="library.maven:_concurrent:concurrent:1.3.4.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="pseudosimulation.runtime.production.module.classpath">
+    <pathelement location="${pseudosimulation.output.dir}"/>
+    <path refid="common.runtime.production.module.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-math:2.2.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.3.classpath"/>
+    <path refid="eventsbasedptrouter.runtime.production.module.classpath"/>
+    <path refid="library.maven:_commons-cli:commons-cli:1.0.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.0.classpath"/>
+    <path refid="library.maven:_colt:colt:1.2.0.classpath"/>
+    <path refid="library.maven:_concurrent:concurrent:1.3.4.classpath"/>
+    <path refid="matsim.runtime.production.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="pseudosimulation.module.classpath">
+    <path refid="${module.jdk.classpath.pseudosimulation}"/>
+    <pathelement location="${pseudosimulation.output.dir}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.maven:_org.apache.commons:commons-math:2.2.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.3.classpath"/>
+    <pathelement location="${eventsbasedptrouter.testoutput.dir}"/>
+    <pathelement location="${eventsbasedptrouter.output.dir}"/>
+    <path refid="library.maven:_commons-cli:commons-cli:1.0.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.0.classpath"/>
+    <path refid="library.maven:_colt:colt:1.2.0.classpath"/>
+    <path refid="library.maven:_concurrent:concurrent:1.3.4.classpath"/>
+    <pathelement location="${matsim-examples.testoutput.dir}"/>
+    <pathelement location="${matsim-examples.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <pathelement location="${matsim.testoutput.dir}"/>
+    <pathelement location="${matsim.output.dir}"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  <path id="pseudosimulation.runtime.module.classpath">
+    <pathelement location="${pseudosimulation.testoutput.dir}"/>
+    <pathelement location="${pseudosimulation.output.dir}"/>
+    <path refid="common.runtime.module.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-math:2.2.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.3.classpath"/>
+    <path refid="eventsbasedptrouter.runtime.module.classpath"/>
+    <path refid="library.maven:_commons-cli:commons-cli:1.0.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.0.classpath"/>
+    <path refid="library.maven:_colt:colt:1.2.0.classpath"/>
+    <path refid="library.maven:_concurrent:concurrent:1.3.4.classpath"/>
+    <path refid="matsim-examples.runtime.module.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-library:1.3.classpath"/>
+    <path refid="matsim.runtime.module.classpath"/>
+    <path refid="library.maven:_log4j:log4j:1.2.15.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-main:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-api:14.0.classpath"/>
+    <path refid="library.maven:_com.vividsolutions:jts:1.13.classpath"/>
+    <path refid="library.maven:_org.jdom:jdom:1.1.3.classpath"/>
+    <path refid="library.maven:_javax.media:jai_core:1.1.3.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-referencing:14.0.classpath"/>
+    <path refid="library.maven:_com.googlecode.efficient-java-matrix-library:core:0.26.classpath"/>
+    <path refid="library.maven:_commons-pool:commons-pool:1.5.4.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-metadata:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-opengis:14.0.classpath"/>
+    <path refid="library.maven:_net.java.dev.jsr-275:jsr-275:1.0-beta-2.classpath"/>
+    <path refid="library.maven:_jgridshift:jgridshift:1.0.classpath"/>
+    <path refid="library.maven:_net.sf.geographiclib:geographiclib-java:1.44.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-shapefile:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-data:14.0.classpath"/>
+    <path refid="library.maven:_org.geotools:gt-epsg-hsql:14.0.classpath"/>
+    <path refid="library.maven:_org.hsqldb:hsqldb:2.3.0.classpath"/>
+    <path refid="library.maven:_org.jfree:jfreechart:1.0.19.classpath"/>
+    <path refid="library.maven:_org.jfree:jcommon:1.0.23.classpath"/>
+    <path refid="library.maven:_com.google.inject:guice:4.1.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_aopalliance:aopalliance:1.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:19.0.classpath"/>
+    <path refid="library.maven:_com.google.inject.extensions:guice-multibindings:4.1.0.classpath"/>
+    <path refid="library.maven:_net.sf.trove4j:trove4j:3.0.3.classpath"/>
+    <path refid="library.maven:_org.jvnet.ogc:kml-v_2_2_0:2.2.0.classpath"/>
+    <path refid="library.maven:_org.hisrc.w3c:atom-v_1_0:1.1.0.classpath"/>
+    <path refid="library.maven:_org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.4.classpath"/>
+    <path refid="library.maven:_net.jpountz.lz4:lz4:1.3.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.pseudosimulation">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.pseudosimulation">
+    <patternset refid="excluded.from.module.pseudosimulation"/>
+  </patternset>
+  
+  <path id="pseudosimulation.module.sourcepath">
+    <dirset dir="${module.pseudosimulation.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  <path id="pseudosimulation.module.test.sourcepath">
+    <dirset dir="${module.pseudosimulation.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.pseudosimulation" depends="compile.module.pseudosimulation.production,compile.module.pseudosimulation.tests" description="Compile module pseudosimulation"/>
+  
+  <target name="compile.module.pseudosimulation.production" depends="register.custom.compilers,compile.module.common,compile.module.eventsbasedptrouter,compile.module.matsim-examples,compile.module.matsim" description="Compile module pseudosimulation; production classes">
+    <mkdir dir="${pseudosimulation.output.dir}"/>
+    <javac2 destdir="${pseudosimulation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pseudosimulation}/javac">
+      <compilerarg line="${compiler.args.pseudosimulation}"/>
+      <bootclasspath refid="pseudosimulation.module.bootclasspath"/>
+      <classpath refid="pseudosimulation.module.production.classpath"/>
+      <src refid="pseudosimulation.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.pseudosimulation"/>
+    </javac2>
+    
+    <copy todir="${pseudosimulation.output.dir}">
+      <fileset dir="${module.pseudosimulation.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.pseudosimulation.tests" depends="register.custom.compilers,compile.module.pseudosimulation.production" description="compile module pseudosimulation; test classes" unless="skip.tests">
+    <mkdir dir="${pseudosimulation.testoutput.dir}"/>
+    <javac2 destdir="${pseudosimulation.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pseudosimulation}/javac">
+      <compilerarg line="${compiler.args.pseudosimulation}"/>
+      <bootclasspath refid="pseudosimulation.module.bootclasspath"/>
+      <classpath refid="pseudosimulation.module.classpath"/>
+      <src refid="pseudosimulation.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.pseudosimulation"/>
+    </javac2>
+    
+    <copy todir="${pseudosimulation.testoutput.dir}">
+      <fileset dir="${module.pseudosimulation.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.pseudosimulation" description="cleanup module">
+    <delete dir="${pseudosimulation.output.dir}"/>
+    <delete dir="${pseudosimulation.testoutput.dir}"/>
+  </target>
+</project>

@@ -39,6 +39,7 @@ public class VrpPaths {
 		Path path = null;
 		if (fromLink != toLink) {
 			// calc path for departureTime+1 (we need 1 second to move over the node)
+
 			path = router.calcLeastCostPath(fromLink.getToNode(), toLink.getFromNode(), departureTime + 1, null, null);
 		}
 

@@ -201,7 +201,7 @@ public final class TripRouter implements MatsimExtensionPoint {
 	 * @param person the {@link Person} to route
 	 * @return a list of {@link PlanElement}, in proper order, representing the trip.
 	 *
-	 * @throws UnknownModeException if no RoutingModule is registered for the
+	 * @throws UnknownModeException if no routingModule is registered for the
 	 * given mode.
 	 */
 	public synchronized List<? extends PlanElement> calcRoute(

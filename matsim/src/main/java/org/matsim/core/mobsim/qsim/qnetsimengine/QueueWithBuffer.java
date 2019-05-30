@@ -735,6 +735,9 @@ final class QueueWithBuffer implements QLaneI, SignalizeableItem {
 
 		for (QVehicle veh : vehQueue) {
 			context.getEventsManager().processEvent( new VehicleAbortsEvent(now, veh.getId(), veh.getCurrentLink().getId()));
+			if (veh.getDriver() ==null){
+				System.out.println();
+			}
 			context.getEventsManager().processEvent( new PersonStuckEvent(now, veh.getDriver().getId(), veh.getCurrentLink().getId(), veh.getDriver().getMode()));
 
 			context.getAgentCounter().incLost();
@@ -792,6 +795,9 @@ final class QueueWithBuffer implements QLaneI, SignalizeableItem {
 
 //		veh.setCurrentLink(qLink.getLink());
 		this.qLink.setCurrentLinkToVehicle( veh ) ;
+		if (veh.getDriver() == null){
+			System.out.println();
+		}
 		vehQueue.add(veh);
 
 		switch (context.qsimConfig.getTrafficDynamics()) {
@@ -839,6 +845,9 @@ final class QueueWithBuffer implements QLaneI, SignalizeableItem {
 	 */
 	@Override
 	public final void addTransitSlightlyUpstreamOfStop( final QVehicle veh) {
+		if (veh.getDriver() == null){
+			System.out.println();
+		}
 		this.vehQueue.addFirst(veh) ;
 	}
 	

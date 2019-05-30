@@ -73,10 +73,10 @@ public class MultiModalControlerListenerTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void testSimpleScenario() {
-		log.info("Run test single threaded...");
+		log.info("run test single threaded...");
 		runSimpleScenario(1);
 
-		log.info("Run test multi threaded...");
+		log.info("run test multi threaded...");
 		runSimpleScenario(2);
 		runSimpleScenario(4);
 	}
@@ -185,21 +185,21 @@ public class MultiModalControlerListenerTest {
     @Ignore("Due to bugfixes in slow flowCap accumulation in QueueWithBuffer")//by michalm
 	@Test
 	public void testBerlinScenario_singleThreaded() {
-		log.info("Run test single threaded...");
+		log.info("run test single threaded...");
 		runBerlinScenario(1);
 	}
 
 	@Ignore("Due to bugfixes in slow flowCap accumulation in QueueWithBuffer")//by michalm
 	@Test
 	public void testBerlinScenario_multiThreaded_2() {
-		log.info("Run test multi threaded with 2 threads...");
+		log.info("run test multi threaded with 2 threads...");
 		runBerlinScenario(2);
 	}
 
     @Ignore("Due to bugfixes in slow flowCap accumulation in QueueWithBuffer")//by michalm
 	@Test
 	public void testBerlinScenario_multiThreaded_4() {
-		log.info("Run test multi threaded with 4 threads...");
+		log.info("run test multi threaded with 4 threads...");
 		runBerlinScenario(4);
 	}
 

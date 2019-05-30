@@ -49,7 +49,7 @@ import org.matsim.pt.router.TransitRouter;
  * @author pieterfourie
  * <p>
  * A controler that alternates between the QSim and PSim for the mobility simulation.
- * Run this class with no arguments to get printed help listing current command line options.
+ * run this class with no arguments to get printed help listing current command line options.
  */
 public class RunPSim {
 	private Config config;

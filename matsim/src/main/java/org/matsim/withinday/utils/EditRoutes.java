@@ -62,7 +62,7 @@ public final class EditRoutes {
 	
 	/*
 	 * Design thoughts while adding access/egress walk legs to car trips:
-	 * . Matsim has a computer science router (LeastCostPathCalculator, from node to node) and a behavioral router (RoutingModule, from
+	 * . Matsim has a computer science router (LeastCostPathCalculator, from node to node) and a behavioral router (routingModule, from
 	 *    facility to facility).
 	 * . For something like replanCurrentRoute it does not really make sense to start at a facility.
 	 * . So it seems that for replanCurrentRoute, the computer science router makes more sense.

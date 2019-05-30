@@ -43,7 +43,7 @@ public class TaxiStatsWriter {
 	}
 
 	private void writePassengerWaitTimeStats(CompactCSVWriter writer) {
-		writer.writeNext("Passenger Wait Time [s]");
+		writer.writeNext("passenger Wait Time [s]");
 		writer.writeNext(getStatsSubheader("n"));
 
 		for (TaxiStats s : taxiStats) {
@@ -55,7 +55,7 @@ public class TaxiStatsWriter {
 	}
 
 	private void writeVehicleEmptyDriveRatioStats(CompactCSVWriter writer) {
-		writer.writeNext("Vehicle Empty Drive Ratio");
+		writer.writeNext("vehicle Empty Drive Ratio");
 		writer.writeNext(getStatsSubheader("fleetAvg"));
 
 		for (TaxiStats s : taxiStats) {
@@ -68,7 +68,7 @@ public class TaxiStatsWriter {
 	}
 
 	private void writeVehicleWaitRatioStats(CompactCSVWriter writer) {
-		writer.writeNext("Vehicle Wait Ratio");
+		writer.writeNext("vehicle Wait Ratio");
 		writer.writeNext(getStatsSubheader("fleetAvg"));
 
 		for (TaxiStats s : taxiStats) {

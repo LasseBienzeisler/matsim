@@ -45,7 +45,7 @@ public class TaxiConfigGroup extends ReflectiveConfigGroup {
 
 	public static final String DESTINATION_KNOWN = "destinationKnown";
 	static final String DESTINATION_KNOWN_EXP =
-			"If false, the drop-off location remains unknown to the optimizer and scheduler"
+			"If false, the drop-off location remains unknown to the optimizer and org.matsim.contrib.spatialDrt.scheduler"
 					+ " until the end of pickup. False by default.";
 
 	public static final String VEHICLE_DIVERSION = "vehicleDiversion";

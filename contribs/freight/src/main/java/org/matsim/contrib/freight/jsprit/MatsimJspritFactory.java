@@ -172,11 +172,11 @@ public class MatsimJspritFactory {
 	}
 	
 	/**
-	 * Creates {@link CarrierVehicle} from a {basics.route.Vehicle}
+	 * Creates {@link CarrierVehicle} from a {basics.route.vehicle}
 	 * 
 	 * @param vehicle to be transformed to CarrierVehicle
 	 * @return carrierVehicle
-	 * @see CarrierVehicle, Vehicle
+	 * @see CarrierVehicle, vehicle
 	 */
 	static CarrierVehicle createCarrierVehicle(Vehicle vehicle){
 		String vehicleId = vehicle.getId();

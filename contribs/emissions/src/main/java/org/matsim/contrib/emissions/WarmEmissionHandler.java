@@ -159,7 +159,7 @@ public class WarmEmissionHandler implements LinkEnterEventHandler, LinkLeaveEven
 		if(!this.linkenter.containsKey(vehicleId)){
 			int maxLinkLeaveFirstActWarnCnt = 3;
 			if(linkLeaveFirstActWarnCnt < maxLinkLeaveFirstActWarnCnt){
-				logger.info("Vehicle " + vehicleId + " is ending its first activity of the day and leaving link " + linkId + " without having entered.");
+				logger.info("vehicle " + vehicleId + " is ending its first activity of the day and leaving link " + linkId + " without having entered.");
 				logger.info("This is because of the MATSim logic that there is no link enter event for the link of the first activity");
 				logger.info("Thus, no emissions are calculated for this link leave event.");
 				if (linkLeaveFirstActWarnCnt == maxLinkLeaveFirstActWarnCnt) logger.warn(Gbl.FUTURE_SUPPRESSED);
@@ -168,7 +168,7 @@ public class WarmEmissionHandler implements LinkEnterEventHandler, LinkLeaveEven
 		} else if (!this.linkenter.get(vehicleId).getFirst().equals(linkId)){
 			int maxLinkLeaveSomeActWarnCnt = 3;
 			if(linkLeaveSomeActWarnCnt < maxLinkLeaveSomeActWarnCnt){
-				logger.warn("Vehicle " + vehicleId + " is ending an activity other than the first and leaving link " + linkId + " without having entered.");
+				logger.warn("vehicle " + vehicleId + " is ending an activity other than the first and leaving link " + linkId + " without having entered.");
 				logger.warn("This indicates that there is some inconsistency in vehicle use; please check your inital plans file for consistency.");
 				logger.warn("Thus, no emissions are calculated neither for this link leave event nor for the last link that was entered.");
 				if (linkLeaveSomeActWarnCnt == maxLinkLeaveSomeActWarnCnt) logger.warn(Gbl.FUTURE_SUPPRESSED);

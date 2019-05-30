@@ -34,7 +34,7 @@
 		<param name="changeStartLinkToLastLinkInSchedule" value="true" />
 		
 		<!-- If false, the drop-off location remains unknown to the optimizer and 
-			scheduler until the end of pickup -->
+			org.matsim.contrib.spatialDrt.scheduler until the end of pickup -->
 		<param name="destinationKnown" value="false" />
 
 		<!-- If true, detailed hourly taxi stats are dumped after each iteration. -->

@@ -165,7 +165,7 @@ public class WarmEmissionAnalysisModule {
 		if(vehicle == null ||
 				(vehicle.getType() == null && vehicle.getType().getDescription() == null) // if both are null together; no vehicle type information.
 				) {
-			throw new RuntimeException("Vehicle type description for vehicle " + vehicle + " is missing. " +
+			throw new RuntimeException("vehicle type description for vehicle " + vehicle + " is missing. " +
 					"Please make sure that requirements for emission vehicles in "
 					+ EmissionsConfigGroup.GROUP_NAME + " config group are met. Aborting...");
 		}
@@ -174,7 +174,7 @@ public class WarmEmissionAnalysisModule {
 
 		Tuple<HbefaVehicleCategory, HbefaVehicleAttributes> vehicleInformationTuple = convertVehicleTypeId2VehicleInformationTuple(vehicleDescription);
 		if (vehicleInformationTuple.getFirst() == null){
-			throw new RuntimeException("Vehicle category for vehicle " + vehicle + " is not valid. " +
+			throw new RuntimeException("vehicle category for vehicle " + vehicle + " is not valid. " +
 					"Please make sure that requirements for emission vehicles in " + 
 					EmissionsConfigGroup.GROUP_NAME + " config group are met. Aborting...");
 		}

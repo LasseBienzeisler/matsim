@@ -136,7 +136,7 @@ final class Log2Tex {
 
 					}
 				} catch (NumberFormatException e) {
-					log.info("Had one NumberFormatException. Run Debugger...");
+					log.info("Had one NumberFormatException. run Debugger...");
 				}
 
 				writer.flush();

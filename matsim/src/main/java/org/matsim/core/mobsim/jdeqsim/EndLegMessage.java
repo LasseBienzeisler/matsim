@@ -44,8 +44,8 @@ import org.matsim.core.mobsim.qsim.agents.ActivityDurationUtils;
 public class EndLegMessage extends EventMessage {
 	private final PlansConfigGroup.ActivityDurationInterpretation activityDurationInterpretation ;
 	public EndLegMessage(final Scheduler scheduler, final Vehicle vehicle) {
-		// need the time interpretation info here.  Attaching it to the message feels weird.  The scheduler seems a pure simulation object.
-		// Consequence: attach it to Vehicle
+		// need the time interpretation info here.  Attaching it to the message feels weird.  The org.matsim.contrib.spatialDrt.scheduler seems a pure simulation object.
+		// Consequence: attach it to vehicle
 		super(scheduler, vehicle);
 		this.priority = JDEQSimConfigGroup.PRIORITY_ARRIVAL_MESSAGE;
 		if ( vehicle == null ) {
@@ -80,7 +80,7 @@ public class EndLegMessage extends EventMessage {
 			 * if the departureTime from the act is in the past (this means we
 			 * arrived late), then set the departure time to the current
 			 * simulation time this avoids that messages in the past are put
-			 * into the scheduler (which makes no sense anyway)
+			 * into the org.matsim.contrib.spatialDrt.scheduler (which makes no sense anyway)
 			 */
 			if (departureTime < getMessageArrivalTime()) {
 				departureTime = getMessageArrivalTime();

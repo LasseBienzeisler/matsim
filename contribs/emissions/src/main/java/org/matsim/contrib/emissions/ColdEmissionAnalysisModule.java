@@ -134,13 +134,13 @@ public class ColdEmissionAnalysisModule {
 
 		Map<ColdPollutant, Double> coldEmissions = new HashMap<>();
 		if(vehicle.getType().getDescription() == null){
-			throw new RuntimeException("Vehicle type description for vehicle " + vehicle + "is missing. " +
+			throw new RuntimeException("vehicle type description for vehicle " + vehicle + "is missing. " +
 					"Please make sure that requirements for emission vehicles in "
 					+ EmissionsConfigGroup.GROUP_NAME + " config group are met. Aborting...");
 		}
 		Tuple<HbefaVehicleCategory, HbefaVehicleAttributes> vehicleInformationTuple = convertVehicleDescription2VehicleInformationTuple(vehicleDescription);
 		if (vehicleInformationTuple.getFirst() == null){
-			throw new RuntimeException("Vehicle category for vehicle " + vehicle + " is not valid. " +
+			throw new RuntimeException("vehicle category for vehicle " + vehicle + " is not valid. " +
 					"Please make sure that requirements for emission vehicles in " + 
 					EmissionsConfigGroup.GROUP_NAME + " config group are met. Aborting...");
 		}
