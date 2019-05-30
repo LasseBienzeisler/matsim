@@ -9,6 +9,10 @@ import org.matsim.contrib.dvrp.data.file.ReaderUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.util.AbstractRoutingNetworkLink;
 import org.matsim.core.utils.io.MatsimXmlParser;
+import org.matsim.facilities.ActivityFacility;
+import org.matsim.facilities.ActivityOption;
+import org.matsim.facilities.ActivityOptionImpl;
+import org.matsim.facilities.OpeningTimeImpl;
 import org.xml.sax.Attributes;
 import sun.nio.ch.Net;
 
@@ -18,6 +22,8 @@ public class DepotReader extends MatsimXmlParser {
 
     private static final String DEPOT = "depot";
     private static final double DEFAULT_CAPACITY = 0;
+    private static final double DEFAULT_START_TIME = 0;
+    private static final double DEFAULT_END_TIME = Double.MAX_VALUE;
     private final DepotManager depotManager;
     private final Network network;
 
@@ -40,18 +46,17 @@ public class DepotReader extends MatsimXmlParser {
     }
 
     private Depot createDepot(Attributes atts) {
-        Id<Depot> id = Id.create(atts.getValue("id"), Depot.class);
+        Id<ActivityFacility> id = Id.create(atts.getValue("id"), ActivityFacility.class);
         Link link = network.getLinks().get(Id.createLinkId(atts.getValue("link")));
         //TODO: Create specific links for depots
         double capacity = ReaderUtils.getDouble(atts, "capacity", DEFAULT_CAPACITY);
-        switch (atts.getValue("type")){
-            case ("depot"):
-                return new DepotImpl(id, link, capacity);
-            case ("HDB"):
-                return new HDBDepot(id, link, capacity);
-            default:
-                throw new RuntimeException("Wrong input depot type!");
-        }
+        double startTime = ReaderUtils.getDouble(atts, "start_time",DEFAULT_START_TIME);
+        double endTime = ReaderUtils.getDouble(atts, "end_time",DEFAULT_END_TIME);
+        Depot.DepotType depotType = Depot.DepotType.valueOf(atts.getValue("type"));
+        ActivityOption activityOption = new ActivityOptionImpl(depotType.toString());
+        activityOption.setCapacity(capacity);
+        activityOption.addOpeningTime(new OpeningTimeImpl(startTime, endTime));
+        return new DepotImpl(id, link,activityOption, depotType);
     }
 
 }

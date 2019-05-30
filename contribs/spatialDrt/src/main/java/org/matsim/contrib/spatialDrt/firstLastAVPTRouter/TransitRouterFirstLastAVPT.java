@@ -41,7 +41,6 @@ import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.PtConstants;
 import org.matsim.pt.router.MultiNodeDijkstra;
-import org.matsim.pt.router.TransitRouterConfig;
 import org.matsim.pt.routes.ExperimentalTransitRoute;
 import org.matsim.pt.transitSchedule.api.TransitStopArea;
 import org.matsim.pt.transitSchedule.api.TransitStopFacility;
@@ -56,32 +55,34 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 
 	private final MultiNodeDijkstra dijkstra;
 	private final MultiDestinationDijkstra mDijkstra;
-	private final TransitRouterConfig config;
-	private final TransitRouterTravelTimeAndDisutilityFirstLastAVPT ttCalculator;
+	private final TransitRouterParams config;
+	private final TransitRouterUtilityParams params;
+	private final TransitRouterTravelTimeAndDisutilityFirstLastAVPT disutilityFunction;
 	private final Network cleanNetwork;
 	private final Map<Id<TransitStopArea>, QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode>> stopsByArea;
 
 
-	public TransitRouterFirstLastAVPT(final TransitRouterConfig config, final TransitRouterTravelTimeAndDisutilityFirstLastAVPT ttCalculator,
-                                      final TransitRouterNetworkFirstLastAVPT routerNetwork, Network cleanNetwork, Map<Id<TransitStopArea>, QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode>> stopsByArea) {
+	public TransitRouterFirstLastAVPT(final TransitRouterParams config, final TransitRouterUtilityParams params, final TransitRouterTravelTimeAndDisutilityFirstLastAVPT ttCalculator,
+									  final TransitRouterNetworkFirstLastAVPT routerNetwork, Network cleanNetwork, Map<Id<TransitStopArea>, QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode>> stopsByArea) {
 		this.config = config;
+		this.params = params;
 		this.transitNetwork = routerNetwork;
-		this.ttCalculator = ttCalculator;
-		this.dijkstra = new MultiNodeDijkstra(this.transitNetwork, this.ttCalculator, this.ttCalculator);
+		this.disutilityFunction = ttCalculator;
+		this.dijkstra = new MultiNodeDijkstra(this.transitNetwork, this.disutilityFunction, this.disutilityFunction);
 		PreProcessDijkstra preProcessDijkstra = new PreProcessDijkstra();
 		preProcessDijkstra.run(routerNetwork);
-		mDijkstra = new MultiDestinationDijkstra(routerNetwork, this.ttCalculator, this.ttCalculator, preProcessDijkstra);
+		mDijkstra = new MultiDestinationDijkstra(routerNetwork, this.disutilityFunction, this.disutilityFunction, preProcessDijkstra);
 		this.cleanNetwork = cleanNetwork;
 		this.stopsByArea = stopsByArea;
 	}
 	
 	private Map<Node, InitialNode>[] locateWrappedNearestTransitNodes(Person person, Coord coord, Id<Link> link, double departureTime) {
-		Collection<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> nearestNodes = this.transitNetwork.getNearestNodes(coord, TransitRouterNetworkFirstLastAVPT.maxBeelineWalkConnectionDistance);
+		Collection<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> nearestNodes = this.transitNetwork.getNearestNodes(coord, config.searchRadius);
 		if (nearestNodes.size() < 1) {
 			// also enlarge search area if only one stop found, maybe a second one is near the border of the search area
 			TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode nearestNode = this.transitNetwork.getNearestNode(coord);
 			double distance = CoordUtils.calcEuclideanDistance(coord, nearestNode.stop.getCoord());
-			nearestNodes = this.transitNetwork.getNearestNodes(coord, distance + this.config.getExtensionRadius());
+			nearestNodes = this.transitNetwork.getNearestNodes(coord, distance + this.config.extensionRadius);
 		}
 		for (Id<TransitStopArea> stopAreaId: stopsByArea.keySet()){
 			TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode nearestNode = stopsByArea.get(stopAreaId).getClosest(coord.getX(),coord.getY());
@@ -96,12 +97,12 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			double initialCost = getWalkDisutility(person, coord, toCoord);
 			wrappedNearestNodes.put(node, new InitialNode(initialCost, initialTime + departureTime));
 		}
-		Collection<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> nearestNodesAV = this.transitNetwork.getNearestAVNodes(coord, TransitRouterNetworkFirstLastAVPT.maxBeelineAVConnectionDistance);
+		Collection<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> nearestNodesAV = this.transitNetwork.getNearestAVNodes(coord, config.maxBeelineAVConnectionDistance);
 		if (nearestNodesAV.size() < 1) {
 			// also enlarge search area if only one stop found, maybe a second one is near the border of the search area
 			TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode nearestNode = this.transitNetwork.getNearestNode(coord);
 			double distance = CoordUtils.calcEuclideanDistance(coord, nearestNode.stop.getCoord());
-			nearestNodesAV = this.transitNetwork.getNearestNodes(coord, distance + this.config.getExtensionRadius());
+			nearestNodesAV = this.transitNetwork.getNearestNodes(coord, distance + this.config.extensionRadius);
 		}
 		Map<Node, InitialNode> wrappedNearestNodesAV = new LinkedHashMap<>();
 		if(transitNetwork.getNetworkModes()!= TransitRouterNetworkFirstLastAVPT.NetworkModes.PT)
@@ -114,19 +115,19 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 	}
 	
 	private double getWalkTime(Person person, Coord coord, Coord toCoord) {
-		return this.ttCalculator.getWalkTravelTime(person, coord, toCoord);
+		return this.disutilityFunction.getWalkTravelTime(person, coord, toCoord);
 	}
 	
 	private double getWalkDisutility(Person person, Coord coord, Coord toCoord) {
-		return this.ttCalculator.getWalkTravelDisutility(person, coord, toCoord);
+		return this.disutilityFunction.getWalkTravelDisutility(person, coord, toCoord);
 	}
 
 	private double getAVTime(Person person, Id<Link> linkA, Id<Link> linkB, double time) {
-		return this.ttCalculator.getAVTravelTime(person, linkA, linkB, time);
+		return this.disutilityFunction.getAVTravelTime(person, linkA, linkB, time);
 	}
 
 	private double getAVDisutility(Person person, Id<Link> linkA, Id<Link> linkB, double time) {
-		return this.ttCalculator.getAVTaxiTravelDisutility(person, linkA, linkB, time);
+		return this.disutilityFunction.getAVTaxiTravelDisutility(person, linkA, linkB, time);
 	}
 	
 	public Map<Id<Node>, Path> calcPathRoutes(final Id<Node> fromNodeId, final Set<Id<Node>> toNodeIds, final double startTime, final Person person) {
@@ -140,11 +141,12 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 		else
 			return new HashMap<>();
 	}
+
 	@Override
 	public List<PlanElement> calcRoute(final Facility fromFacility, final Facility toFacility, final double departureTime, final Person person) {
 		// find possible start stops
 		Map<Node, InitialNode>[] wrappedFromNodes = this.locateWrappedNearestTransitNodes(person, fromFacility.getCoord(), fromFacility.getLinkId(), departureTime);
-		Map<Node, InitialNode> wrappedAllFromNodes = wrappedFromNodes[0];
+		Map<Node, InitialNode> wrappedAllFromNodes = new HashMap<>(wrappedFromNodes[0]);
 		if(cleanNetwork.getLinks().containsKey(fromFacility.getLinkId())) {
 			Set<Node> toRemove = new HashSet<>();
 			for (Map.Entry<Node, InitialNode> entry : wrappedFromNodes[1].entrySet()) {
@@ -164,7 +166,7 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			wrappedFromNodes[1].clear();
 		// find possible end stops
 		Map<Node, InitialNode>[] wrappedToNodes  = this.locateWrappedNearestTransitNodes(person, toFacility.getCoord(), toFacility.getLinkId(), departureTime);
-		Map<Node, InitialNode> wrappedAllToNodes = wrappedToNodes[0];
+		Map<Node, InitialNode> wrappedAllToNodes = new HashMap<>(wrappedToNodes[0]);
 		if(cleanNetwork.getLinks().containsKey(toFacility.getLinkId())) {
 			Set<Node> toRemove = new HashSet<>();
 			for (Map.Entry<Node, InitialNode> entry : wrappedToNodes[1].entrySet()) {
@@ -182,11 +184,10 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 		}
 		else
 			wrappedToNodes[1].clear();
-		// find routes between start and end stops
 		Path p = this.dijkstra.calcLeastCostPath(wrappedAllFromNodes, wrappedAllToNodes, person);
 		if (p == null)
 			return null;
-		double pathCost = p.travelCost + wrappedAllFromNodes.get(p.nodes.get(0)).initialCost + wrappedAllToNodes.get(p.nodes.get(p.nodes.size() - 1)).initialCost + (p.links.size()>0?this.config.getUtilityOfLineSwitch_utl():0);
+		double pathCost = p.travelCost + wrappedAllFromNodes.get(p.nodes.get(0)).initialCost + wrappedAllToNodes.get(p.nodes.get(p.nodes.size() - 1)).initialCost + (p.links.size()>0?this.params.utilityLineSwitch+params.initialCostPT:0);
 		double directWalkCost = getWalkDisutility(person,fromFacility.getCoord(), toFacility.getCoord());
 		boolean avFrom = false;
 		InitialNode initialNode = wrappedFromNodes[1].get(p.nodes.get(0));
@@ -219,7 +220,7 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			Route walkRoute = RouteUtils.createGenericRouteImpl(fromFacility.getLinkId(), toFacility.getLinkId());
 			walkRoute.setDistance(walkDistance);
 			leg.setRoute(walkRoute);
-			leg.setTravelTime(walkDistance/this.config.getBeelineWalkSpeed());
+			leg.setTravelTime(walkDistance/this.config.beelineWalkSpeed);
 			legs.add(leg);
 			direct = true;
 		}
@@ -232,7 +233,7 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 				Route walkRoute = RouteUtils.createGenericRouteImpl(fromFacility.getLinkId(), toFacility.getLinkId());
 				walkRoute.setDistance(walkDistance);
 				leg.setRoute(walkRoute);
-				leg.setTravelTime(walkDistance / ttCalculator.avSpeed);
+				leg.setTravelTime(walkDistance / TransitRouterParams.avSpeed);
 				legs.add(leg);
 				direct = true;
 			}
@@ -260,7 +261,7 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkLink l = (TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkLink) link;
 			if(l.route!=null) {
 				//in line link
-				double ttime = ttCalculator.getLinkTravelTime(l, time, person, null);
+				double ttime = disutilityFunction.getLinkTravelTime(l, time, person, null);
 				travelTime += ttime;
 				time += ttime;
 			}
@@ -278,18 +279,20 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			}
 			else if(l.toNode.route!=null && l.toNode.line!=null) {
 				//wait link
-				Id<Link> startId = start ? startLinkId : stop.getLinkId(), endId = l.fromNode.stop.getLinkId();
-				if(!startId.equals(endId)) {
-					start = false;
+				if(coord!=null) {
+					Id<Link> startId = start ? startLinkId : stop.getLinkId(), endId = l.fromNode.stop.getLinkId();
 					distance = CoordUtils.calcEuclideanDistance(coord, l.fromNode.getCoord());
-					leg = PopulationUtils.createLeg(mode);
-					moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.getBeelineWalkSpeed() : ttCalculator.avSpeed);
-					route = RouteUtils.createGenericRouteImpl(startId, endId);
-					route.setDistance(distance);
-					leg.setRoute(route);
-					leg.setTravelTime(moveTime);
-					time += moveTime;
-					legs.add(leg);
+					if (distance > 0 || !startLinkId.equals(l.fromNode.stop.getLinkId())) {
+						start = false;
+						leg = PopulationUtils.createLeg(mode);
+						moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.beelineWalkSpeed : TransitRouterParams.avSpeed);
+						route = RouteUtils.createGenericRouteImpl(startId, endId);
+						route.setDistance(distance);
+						leg.setRoute(route);
+						leg.setTravelTime(moveTime);
+						time += moveTime;
+						legs.add(leg);
+					}
 				}
 				stop = l.fromNode.stop;
 				coord = null;
@@ -297,11 +300,11 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			else if(l.mode!=null) {
 				if (!mode.equals("pt") && !mode.equals(l.mode)) {
 					Id<Link> startId = start ? startLinkId : stop.getLinkId(), endId = l.fromNode.stop.getLinkId();
-					if (startId != endId) {
+					distance = CoordUtils.calcEuclideanDistance(coord, l.fromNode.getCoord());
+					if (distance>0 || !startLinkId.equals(l.fromNode.stop.getLinkId())) {
 						start = false;
-						distance = CoordUtils.calcEuclideanDistance(coord, l.fromNode.getCoord());
 						leg = PopulationUtils.createLeg(mode);
-						moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.getBeelineWalkSpeed() : ttCalculator.avSpeed);
+						moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.beelineWalkSpeed : TransitRouterParams.avSpeed);
 						route = RouteUtils.createGenericRouteImpl(startId, endId);
 						route.setDistance(distance);
 						leg.setRoute(route);
@@ -309,6 +312,10 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 						time += moveTime;
 						legs.add(leg);
 						coord = l.fromNode.getCoord();
+						stop = l.fromNode.stop;
+						mode = l.mode;
+					}
+					else {
 						stop = l.fromNode.stop;
 						mode = l.mode;
 					}
@@ -321,10 +328,11 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 		}
 		if(!mode.equals(TransportMode.pt) && !mode.equals(finalMode)) {
 			TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode n = ((TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode)p.nodes.get(p.nodes.size()-1));
-			if(!stop.getLinkId().equals(n.stop.getLinkId())) {
+			distance = CoordUtils.calcEuclideanDistance(coord, n.getCoord());
+			if(distance>0 || !startLinkId.equals(n.stop.getLinkId())) {
 				distance = CoordUtils.calcEuclideanDistance(coord, n.getCoord());
 				leg = PopulationUtils.createLeg(mode);
-				moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.getBeelineWalkSpeed() : ttCalculator.avSpeed);
+				moveTime = distance / (mode.equals(TransportMode.transit_walk) ? this.config.beelineWalkSpeed : TransitRouterParams.avSpeed);
 				route = RouteUtils.createGenericRouteImpl(stop.getLinkId(), n.stop.getLinkId());
 				route.setDistance(distance);
 				leg.setRoute(route);
@@ -341,7 +349,7 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 			}
 			distance = CoordUtils.calcEuclideanDistance(coord, toCoord);
 			leg = PopulationUtils.createLeg(finalMode);
-			moveTime = distance / (finalMode.equals(TransportMode.transit_walk) ? this.config.getBeelineWalkSpeed() : ttCalculator.avSpeed);
+			moveTime = distance / (finalMode.equals(TransportMode.transit_walk) ? this.config.beelineWalkSpeed : TransitRouterParams.avSpeed);
 			route = RouteUtils.createGenericRouteImpl(stop.getLinkId(), endLinkId);
 			route.setDistance(distance);
 			leg.setRoute(route);
@@ -374,10 +382,6 @@ public class TransitRouterFirstLastAVPT implements RoutingModule {
 
 	protected MultiNodeDijkstra getDijkstra() {
 		return dijkstra;
-	}
-
-	protected TransitRouterConfig getConfig() {
-		return config;
 	}
 
 }

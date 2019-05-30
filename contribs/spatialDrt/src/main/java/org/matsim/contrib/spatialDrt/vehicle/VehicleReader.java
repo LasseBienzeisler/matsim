@@ -79,12 +79,12 @@ public class VehicleReader extends MatsimXmlParser {
 		Link startLink = links.get(Id.createLinkId(atts.getValue("start_link")));
 		double t0 = ReaderUtils.getDouble(atts, "t_0", DEFAULT_T_0);
 		double t1 = ReaderUtils.getDouble(atts, "t_1", DEFAULT_T_1);
-		String mode = ReaderUtils.getString(atts, "mode",null);
 		String type = ReaderUtils.getString(atts, "type", null);
 		DynVehicleType vehicleType = vehicleTypes.get(type);
 		int capacity = vehicleType.getSeats();
 		VehicleImpl vehicle =  createVehicle(id, startLink, capacity, t0, t1, vehicleType);
-		vehicle.getAttributes().putAttribute("mode", mode);
+
+		vehicle.getAttributes().putAttribute("mode", vehicleType.getMode());
 		return vehicle;
 	}
 

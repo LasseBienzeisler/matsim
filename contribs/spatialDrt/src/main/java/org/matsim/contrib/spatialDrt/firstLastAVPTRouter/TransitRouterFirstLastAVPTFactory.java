@@ -33,7 +33,6 @@ import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.utils.collections.QuadTree;
 import org.matsim.pt.router.PreparedTransitSchedule;
-import org.matsim.pt.router.TransitRouterConfig;
 import org.matsim.pt.transitSchedule.api.TransitStopArea;
 
 import javax.inject.Provider;
@@ -49,7 +48,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouterFirstLastAVPT> {
 
-	private final TransitRouterConfig config;
+	private final TransitRouterParams config;
 	private final TransitRouterNetworkFirstLastAVPT routerNetwork;
 	private final Scenario scenario;
 
@@ -60,18 +59,15 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 	private final StopStopTime stopStopTimeAV;
 	private final LinkLinkTime linkLinkTimeAV;
 	private Network cleanNetwork;
-	private TransitRouterParams params;
+	private TransitRouterUtilityParams params;
 
 	private Map<Id<TransitStopArea>,QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode>> stopsByArea = new HashMap<>();
 
 
 	@Inject
     public TransitRouterFirstLastAVPTFactory(final Scenario scenario, final WaitTime waitTime, final WaitTime waitTimeAV, final WaitLinkTime waitLinkTime, final StopStopTime stopStopTime, final StopStopTime stopStopTimeAV, final LinkLinkTime linkLinkTime, final TransitRouterNetworkFirstLastAVPT.NetworkModes networkModes) {
-		this.config = new TransitRouterConfig(scenario.getConfig().planCalcScore(),
-				scenario.getConfig().plansCalcRoute(), scenario.getConfig().transitRouter(),
-				scenario.getConfig().vspExperimental());
-		this.config.setBeelineWalkConnectionDistance(300.0);
-		routerNetwork = TransitRouterNetworkFirstLastAVPT.createFromSchedule(scenario.getNetwork(), scenario.getTransitSchedule(), this.config.getBeelineWalkConnectionDistance(), networkModes);
+		this.config = new TransitRouterParams(scenario.getConfig().transitRouter(), scenario.getConfig().plansCalcRoute());
+		routerNetwork = TransitRouterNetworkFirstLastAVPT.createFromSchedule(scenario.getNetwork(), scenario.getTransitSchedule(), this.config.maxBeelineWalkConnectionDistance, networkModes);
 		this.scenario = scenario;
 		this.waitTime = waitTime;
 		this.waitTimeAV = waitTimeAV;
@@ -82,7 +78,7 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 		cleanNetwork = NetworkUtils.createNetwork();
 		new TransportModeNetworkFilter(scenario.getNetwork()).filter(cleanNetwork, Collections.singleton("car"));
 		(new NetworkCleaner()).run(cleanNetwork);
-		this.params = new TransitRouterParams(scenario.getConfig().planCalcScore());
+		this.params = new TransitRouterUtilityParams(scenario.getConfig().planCalcScore());
 		HashSet<Id<TransitStopArea>> stopAreas = new HashSet<>();
 		scenario.getTransitSchedule().getFacilities().values().stream().forEach(transitStopFacility -> stopAreas.add(transitStopFacility.getStopAreaId()));
 		for (Id<TransitStopArea> stopArea: stopAreas) {
@@ -92,7 +88,7 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 			double maxX = Double.NEGATIVE_INFINITY;
 			double maxY = Double.NEGATIVE_INFINITY;
 			for (TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode node : nodeInArea)
-				if(node.line == null) {
+				if(node.line == null && node.route == null) {
 					Coord c = node.stop.getCoord();
 					if (c.getX() < minX)
 						minX = c.getX();
@@ -105,7 +101,7 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 				}
 			QuadTree<TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode> quadTree = new QuadTree<>(minX, minY, maxX, maxY);
 			for (TransitRouterNetworkFirstLastAVPT.TransitRouterNetworkNode node : nodeInArea) {
-				if(node.line == null) {
+				if(node.line == null && node.route == null) {
 					Coord c = node.stop.getCoord();
 					quadTree.put(c.getX(), c.getY(), node);
 				}
@@ -115,6 +111,6 @@ public class TransitRouterFirstLastAVPTFactory implements Provider<TransitRouter
 	}
 	@Override
 	public TransitRouterFirstLastAVPT get() {
-		return new TransitRouterFirstLastAVPT( config, new TransitRouterTravelTimeAndDisutilityFirstLastAVPT(params, config, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTimeAV, scenario.getConfig().travelTimeCalculator(), scenario.getConfig().qsim(), new PreparedTransitSchedule(scenario.getTransitSchedule())), routerNetwork, cleanNetwork, stopsByArea);
+		return new TransitRouterFirstLastAVPT( config, params, new TransitRouterTravelTimeAndDisutilityFirstLastAVPT(config, params, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTimeAV, scenario.getConfig().travelTimeCalculator(), scenario.getConfig().qsim(), new PreparedTransitSchedule(scenario.getTransitSchedule())), routerNetwork, cleanNetwork, stopsByArea);
 	}
 }

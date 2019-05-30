@@ -130,7 +130,7 @@ public class ParkingOntheRoad implements ParkingStrategy, IterationStartsListene
         int previousIdx = vehicle.getSchedule().getCurrentTask().getTaskIdx() - 1;
         Link link = ((DrtStayTask)vehicle.getSchedule().getTasks().get(previousIdx)).getLink();
         if (!linkRecord.containsKey(link.getId())){
-            throw new RuntimeException("The departing vehicle has not registered in link records");
+            throw new RuntimeException("The departing vehicle " + vehicle.getId().toString() + " has not registered in link records. The link is " + link.getId().toString() + " and the time is " + time );
         }
         int num = linkRecord.get(link.getId()) - 1;
         linkRecord.put(link.getId(),num);
@@ -167,6 +167,7 @@ public class ParkingOntheRoad implements ParkingStrategy, IterationStartsListene
     @Override
     public void notifyIterationStarts(IterationStartsEvent event) {
         linkRecord.clear();
+        linksHistory.clear();
     }
 }
 

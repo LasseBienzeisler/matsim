@@ -41,12 +41,12 @@ public class FleetImpl implements Fleet {
 
 	@Override
 	public Map<Id<Vehicle>, ? extends Vehicle> getVehicles() {
-		return Collections.unmodifiableMap(vehicles);
+		return vehicles;
 	}
 
 
 	public Map<Id<Vehicle>, ? extends Vehicle> getVehicles(String mode) {
-		return vehicles.entrySet().stream().filter(vehicle -> ((VehicleImpl)vehicle.getValue()).getAttributes().getAttribute("mode").equals(mode)&& !((VehicleImpl)vehicle.getValue()).getStatus()).collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
+		return vehicles.entrySet().stream().filter(vehicle -> (vehicle.getValue()).getAttributes().getAttribute("mode").equals(mode)&& !((VehicleImpl)vehicle.getValue()).getStatus() && ((VehicleImpl)vehicle.getValue()).getBattery() > 0).collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
 	}
 
 	public void addVehicle(VehicleImpl vehicle) {

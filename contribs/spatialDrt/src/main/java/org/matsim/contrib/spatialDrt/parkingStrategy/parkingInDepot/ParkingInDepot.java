@@ -22,14 +22,14 @@ public class ParkingInDepot implements ParkingStrategy {
 
     @Override
     public ParkingStrategy.ParkingLocation parking(Vehicle vehicle, double time) {
-        Depot bestDepot = findDepots(vehicle);
+        Depot bestDepot = findDepots(vehicle, time);
         if (bestDepot == null){
             return null;
         }
         return new ParkingLocation(vehicle.getId(), bestDepot.getLink());
     }
 
-    private Depot findDepots(Vehicle vehicle) {
+    private Depot findDepots(Vehicle vehicle, double time) {
         DrtStayTask currentTask = (DrtStayTask)vehicle.getSchedule().getCurrentTask();
         Link currentLink = currentTask.getLink();
         if (depotManager.isVehicleInDepot(vehicle)) {
@@ -38,7 +38,7 @@ public class ParkingInDepot implements ParkingStrategy {
 
         Depot bestDepot = null;
         double bestDistance = Double.MAX_VALUE;
-        for (Depot d : depotManager.getDepots(vehicle.getCapacity()).values()) {
+        for (Depot d : depotManager.getDepots(vehicle.getCapacity(), time).values()) {
             if (d.getCapacity() > d.getNumOfVehicles()){
                 double currentDistance = DistanceUtils.calculateSquaredDistance(currentLink.getCoord(), d.getLink().getCoord());
                 if (currentDistance < bestDistance) {
@@ -48,7 +48,7 @@ public class ParkingInDepot implements ParkingStrategy {
             }
         }
         if (bestDepot == null){
-            throw new RuntimeException("All depots are full!!");
+            throw new RuntimeException("All depots are full!! Vehicle " + vehicle.getId() + " cannot find depots.");
         }
         bestDepot.addVehicle(vehicle.getId());
         depotManager.registerVehicle(vehicle.getId(),bestDepot.getId());

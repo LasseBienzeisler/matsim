@@ -19,6 +19,7 @@
 
 package org.matsim.contrib.spatialDrt.schedule;
 
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.data.Vehicle;
@@ -26,6 +27,7 @@ import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.ScheduleImpl;
 import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.contrib.spatialDrt.eav.DischargingRate;
+import org.matsim.contrib.spatialDrt.parkingStrategy.insertionOptimizer.DefaultUnplannedRequestInserter;
 import org.matsim.contrib.spatialDrt.vehicle.DynVehicleType;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
@@ -36,6 +38,7 @@ import java.util.Random;
  * @author michalm
  */
 public class VehicleImpl implements Vehicle {
+	private static final Logger log = Logger.getLogger(VehicleImpl.class);
 	private final Id<Vehicle> id;
 	private Link startLink;
 	private final int capacity;
@@ -56,6 +59,7 @@ public class VehicleImpl implements Vehicle {
 	boolean charging = false;
 
 	boolean parking = false;
+
 
 	Attributes atts = new Attributes();
 
@@ -121,7 +125,7 @@ public class VehicleImpl implements Vehicle {
 		schedule = new ScheduleImpl(this);
 		Random random = new Random();
 		double minBattery = DischargingRate.getMinBattery(vehicleType.getId());
-		battery = (vehicleType.getBatteryCapacity() - minBattery) * Math.log10(random.nextInt(10) + 1) + minBattery;
+		battery = DischargingRate.isEAV?(vehicleType.getBatteryCapacity() - minBattery) * Math.log10(random.nextInt(10) + 1) + minBattery : vehicleType.getBatteryCapacity();
 		charging = false;
 		parking = false;
 	}
@@ -139,24 +143,26 @@ public class VehicleImpl implements Vehicle {
 		this.battery = this.battery + change;
 	}
 
-	public void discharge(double change) {
+	public boolean discharge(double change) {
 		this.battery = this.battery - change;
 //		if (this.schedule.getCurrentTask() instanceof DrtDriveTask && DischargingRate.calculateDischargeByDistance(VrpPaths.calcDistance(((DrtDriveTask) this.schedule.getCurrentTask()).getPath())) + this.battery <= 7.0){
 //			System.out.println();
 //		}
 		if (this.battery < 0){
-			String s = "";
-			for (int i = schedule.getCurrentTask().getTaskIdx(); i < schedule.getTasks().size();i++){
-				Task task = schedule.getTasks().get(i);
-				s +=  task.toString() + ";";
-				if (task instanceof DrtStopTask){
-					String drop = ((DrtStopTask) task).getDrtDropoffRequests().size() > 0 ? Double.toString(((DrtStopTask) task).getDrtDropoffRequests().get(0).getSubmissionTime()):"";
-					String pick = ((DrtStopTask) task).getDrtPickupRequests().size() > 0 ? Double.toString(((DrtStopTask) task).getDrtPickupRequests().get(0).getSubmissionTime()):"";
-					s += " submissionT " + drop + " " + pick + "\n";
-				}
-			}
-			throw new RuntimeException(this.id + " is out of Power!!!" + s);
+//			String s = "";
+//			for (int i = schedule.getCurrentTask().getTaskIdx(); i < schedule.getTasks().size();i++){
+//				Task task = schedule.getTasks().get(i);
+//				s +=  task.toString() + ";";
+//				if (task instanceof DrtStopTask){
+//					String drop = ((DrtStopTask) task).getDrtDropoffRequests().size() > 0 ? Double.toString(((DrtStopTask) task).getDrtDropoffRequests().get(0).getSubmissionTime()):"";
+//					String pick = ((DrtStopTask) task).getDrtPickupRequests().size() > 0 ? Double.toString(((DrtStopTask) task).getDrtPickupRequests().get(0).getSubmissionTime()):"";
+//					s += " submissionT " + drop + " " + pick + "\n";
+//				}
+//			}
+			log.warn("out of battery!");
+			return false;
 		}
+		return true;
 	}
 
 	public void changeStatus(boolean status){
@@ -175,8 +181,13 @@ public class VehicleImpl implements Vehicle {
 		this.parking = parking;
 	}
 
+	public DynVehicleType getType(){
+		return this.vehicleType;
+	}
+
 	@Override
 	public Attributes getAttributes() {
 		return atts;
 	}
+
 }

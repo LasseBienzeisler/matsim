@@ -32,11 +32,9 @@ import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime.WaitLinkTi
 import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.config.groups.TravelTimeCalculatorConfigGroup;
 import org.matsim.core.router.util.TravelDisutility;
+import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.utils.geometry.CoordUtils;
-import org.matsim.pt.router.CustomDataManager;
-import org.matsim.pt.router.PreparedTransitSchedule;
-import org.matsim.pt.router.TransitRouterConfig;
-import org.matsim.pt.router.TransitRouterNetworkTravelTimeAndDisutility;
+import org.matsim.pt.router.*;
 import org.matsim.vehicles.Vehicle;
 
 import java.util.HashMap;
@@ -49,7 +47,7 @@ import java.util.Map;
  * @author sergioo
  */
 
-public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRouterNetworkTravelTimeAndDisutility implements TravelDisutility {
+public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT implements TravelTime, TravelDisutility, TransitTravelDisutility {
 
 	private Link previousLink;
 	private double previousTime;
@@ -63,16 +61,15 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 	private final LinkLinkTime linkLinkTime;
 	private final int numSlots;
 	private final double timeSlot;
-	final static double avSpeed = 6.0;
-	final static double avTaxiSpeed = 9.0;
-	private final TransitRouterParams params;
+	private final TransitRouterParams config;
+	private final TransitRouterUtilityParams params;
 
 
-	public TransitRouterTravelTimeAndDisutilityFirstLastAVPT(TransitRouterParams params, final TransitRouterConfig config, TransitRouterNetworkFirstLastAVPT routerNetwork, WaitTime waitTime, WaitTime waitTimeAV, WaitLinkTime waitLinkTimeAV, StopStopTime stopStopTime, StopStopTime stopStopTimeAV, LinkLinkTime linkLinkTime, TravelTimeCalculatorConfigGroup tTConfigGroup, QSimConfigGroup qSimConfigGroup, PreparedTransitSchedule preparedTransitSchedule) {
-		this(params, config, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTime, tTConfigGroup, qSimConfigGroup.getStartTime(), qSimConfigGroup.getEndTime(), preparedTransitSchedule);
+	public TransitRouterTravelTimeAndDisutilityFirstLastAVPT(TransitRouterParams config, TransitRouterUtilityParams params, TransitRouterNetworkFirstLastAVPT routerNetwork, WaitTime waitTime, WaitTime waitTimeAV, WaitLinkTime waitLinkTimeAV, StopStopTime stopStopTime, StopStopTime stopStopTimeAV, LinkLinkTime linkLinkTime, TravelTimeCalculatorConfigGroup tTConfigGroup, QSimConfigGroup qSimConfigGroup, PreparedTransitSchedule preparedTransitSchedule) {
+		this(config, params, routerNetwork, waitTime, waitTimeAV, waitLinkTimeAV, stopStopTime, stopStopTimeAV, linkLinkTime, tTConfigGroup, qSimConfigGroup.getStartTime(), qSimConfigGroup.getEndTime(), preparedTransitSchedule);
 	}
-	public TransitRouterTravelTimeAndDisutilityFirstLastAVPT(TransitRouterParams params, final TransitRouterConfig config, TransitRouterNetworkFirstLastAVPT routerNetwork, WaitTime waitTime, WaitTime waitTimeAV, WaitLinkTime waitLinkTime, StopStopTime stopStopTime, StopStopTime stopStopTimeAV, LinkLinkTime linkLinkTime, TravelTimeCalculatorConfigGroup tTConfigGroup, double startTime, double endTime, PreparedTransitSchedule preparedTransitSchedule) {
-		super(config, preparedTransitSchedule);
+	public TransitRouterTravelTimeAndDisutilityFirstLastAVPT(TransitRouterParams config, TransitRouterUtilityParams params, TransitRouterNetworkFirstLastAVPT routerNetwork, WaitTime waitTime, WaitTime waitTimeAV, WaitLinkTime waitLinkTime, StopStopTime stopStopTime, StopStopTime stopStopTimeAV, LinkLinkTime linkLinkTime, TravelTimeCalculatorConfigGroup tTConfigGroup, double startTime, double endTime, PreparedTransitSchedule preparedTransitSchedule) {
+		this.config = config;
 		this.params = params;
 		this.waitLinkTime = waitLinkTime;
 		this.linkLinkTime = linkLinkTime;
@@ -87,9 +84,10 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 			}
 			else if(link.toNode.route!=null && link.toNode.line!=null) {
 				double[] times = new double[numSlots];
-				for(int slot = 0; slot<numSlots; slot++)
-					times[slot] = waitTime.getRouteStopWaitTime(link.toNode.line.getId(), link.toNode.route.getId(), link.fromNode.stop.getId(), startTime+slot*timeSlot);
-				linkWaitingTimes.put(link.getId(), times);
+				for(int slot = 0; slot<numSlots; slot++) {
+					times[slot] = waitTime.getRouteStopWaitTime(link.toNode.line.getId(), link.toNode.route.getId(), link.fromNode.stop.getId(), startTime + slot * timeSlot);
+					linkWaitingTimes.put(link.getId(), times);
+				}
 			}
 			else if(link.fromNode.route==null && link.mode.equals(TransitRouterFirstLastAVPT.AV_MODE)) {
 				double[] times = new double[numSlots];
@@ -102,7 +100,6 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 				linkWaitingTimesAV.put(link.getId(), times);
 			}
 	}
-	@Override
 	public double getLinkTravelTime(final Link link, final double time, Person person, Vehicle vehicle) {
 		previousLink = link;
 		previousTime = time;
@@ -118,7 +115,7 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 			cachedLinkTime = linkWaitingTimes.get(wrapped.getId())[index];
 		else if(wrapped.fromNode.route==null && wrapped.mode.equals(TransportMode.transit_walk))
 			//walking link
-			cachedLinkTime = length/this.config.getBeelineWalkSpeed();
+			cachedLinkTime = length/this.config.beelineWalkSpeed;
 		else if(wrapped.fromNode.route==null) {
 			// it's a transfer link (av)
 			cachedLinkTime = linkTravelTimesAV.get(wrapped.getId())[index];
@@ -146,14 +143,16 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 			return -(cachedTravelDisutility?cachedLinkTime:linkWaitingTimes.get(wrapped.getId())[index])*params.marginalUtilityWait_s;
 		else if(wrapped.fromNode.route==null && wrapped.mode.equals(TransportMode.transit_walk))
 			// it's a transfer link (walk)
-			return -(cachedTravelDisutility?cachedLinkTime:length/this.config.getBeelineWalkSpeed())*params.marginalUtilityWalk_m;
+			return -(cachedTravelDisutility?cachedLinkTime:length/this.config.beelineWalkSpeed)*params.marginalUtilityWalk_s
+					-length*params.marginalUtilityWalk_m;
 		else if(wrapped.fromNode.route==null)
 			// it's a transfer link (av)
 			return -(cachedTravelDisutility?cachedLinkTime:linkTravelTimesAV.get(wrapped.getId())[index])*params.marginalUtilityAV_s
-					-(cachedTravelDisutility?cachedWaitTime:linkWaitingTimesAV.get(wrapped.getId())[index])*params.marginalUtilityWait_s;
+					-(cachedTravelDisutility?cachedWaitTime:linkWaitingTimesAV.get(wrapped.getId())[index])*params.marginalUtilityWait_s
+					-length*params.marginalUtilityAV_m;
 		else
 			//inside link
-			return -this.config.getUtilityOfLineSwitch_utl();
+			return -this.params.utilityLineSwitch;
 	}
 	@Override
 	public double getLinkTravelDisutility(Link link, double time, Person person, Vehicle vehicle) {
@@ -168,14 +167,16 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 			return - linkWaitingTimes.get(wrapped.getId())[index]*params.marginalUtilityWait_s;
 		else if(wrapped.fromNode.route==null && wrapped.mode.equals(TransportMode.transit_walk))
 			// it's a transfer link (walk)
-			return -(length/this.config.getBeelineWalkSpeed())*params.marginalUtilityWalk_m;
+			return -(length/this.config.beelineWalkSpeed)*params.marginalUtilityWalk_s
+					-length*params.marginalUtilityWalk_m;
 		else if(wrapped.fromNode.route==null)
 			// it's a transfer link (av)
 			return -linkTravelTimesAV.get(wrapped.getId())[index]*params.marginalUtilityAV_s
-					-linkWaitingTimesAV.get(wrapped.getId())[index]*params.marginalUtilityWait_s;
+					-linkWaitingTimesAV.get(wrapped.getId())[index]*params.marginalUtilityWait_s
+					-length*params.marginalUtilityAV_m;
 		else
 			//inside link
-			return - this.config.getUtilityOfLineSwitch_utl();
+			return - this.params.utilityLineSwitch;
 	}
 	@Override
 	public double getLinkMinimumTravelDisutility(Link link) {
@@ -185,7 +186,7 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 
 	public double getAVTaxiTravelDisutility(Person person, Id<Link> linkA, Id<Link> linkB, double time) {
 		double travelTime = linkLinkTime.getLinkLinkTime(linkA, linkB, time);
-		double distanceCost = -avTaxiSpeed * travelTime * params.marginalUtilityAV_m;
+		double distanceCost = -TransitRouterParams.avTaxiSpeed * travelTime * params.marginalUtilityAVTaxi_m;
 		double waitCost = -waitLinkTime.getWaitLinkTime(linkA, time) * params.marginalUtilityWait_s;
 		return -travelTime * params.marginalUtilityAVTaxi_s + distanceCost + waitCost + params.initialCostAVTaxi;
 	}
@@ -197,8 +198,14 @@ public class TransitRouterTravelTimeAndDisutilityFirstLastAVPT extends TransitRo
 	@Override
 	public double getWalkTravelDisutility(Person person, Coord coord, Coord toCoord) {
 		double timeCost = -getWalkTravelTime(person, coord, toCoord) * params.marginalUtilityWalk_s;
-		double distanceCost = - CoordUtils.calcEuclideanDistance(coord,toCoord) * config.getBeelineDistanceFactor() * params.marginalUtilityWalk_m;
+		double distanceCost = - CoordUtils.calcEuclideanDistance(coord,toCoord) * config.beelineWalkDistanceFactor * params.marginalUtilityWalk_m;
 		return timeCost + distanceCost + params.initialCostWalk;
+	}
+	@Override
+	public double getWalkTravelTime(Person person, Coord coord, Coord toCoord) {
+		double distance = CoordUtils.calcEuclideanDistance(coord, toCoord);
+		double initialTime = distance / config.beelineWalkSpeed;
+		return initialTime;
 	}
 
 }

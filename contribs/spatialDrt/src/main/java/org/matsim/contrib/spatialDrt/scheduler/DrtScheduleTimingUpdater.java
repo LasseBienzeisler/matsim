@@ -29,6 +29,7 @@ import org.matsim.contrib.dvrp.schedule.Schedule.ScheduleStatus;
 import org.matsim.contrib.dvrp.schedule.Schedules;
 import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.contrib.dvrp.tracker.TaskTrackers;
+import org.matsim.contrib.spatialDrt.eav.DrtChargeTask;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
 import org.matsim.core.mobsim.framework.MobsimTimer;
 import org.matsim.core.utils.misc.Time;
@@ -109,8 +110,12 @@ public class DrtScheduleTimingUpdater {
 	private double calcNewEndTime(Vehicle vehicle, DrtTask task, double newBeginTime) {
 		switch (task.getDrtTaskType()) {
 			case STAY: {
+				if (task instanceof DrtChargeTask){
+					double duration = ((DrtChargeTask) task).getCharger().getChargingTime((VehicleImpl) vehicle);
+					return newBeginTime + duration;
+				}
 				if (Schedules.getLastTask(vehicle.getSchedule()).equals(task)) {// last task
-					// even if endTime=beginTime, do not remove this task!!! A DRT schedule should end with WAIT
+					// even if endTime=beginTime, do not remove this task!!! A DRT Schedule should end with WAIT
 					return Math.max(newBeginTime, vehicle.getServiceEndTime());
 				} else {
 					// if this is not the last task then some other task (e.g. DRIVE or PICKUP)
@@ -141,5 +146,6 @@ public class DrtScheduleTimingUpdater {
 				throw new IllegalStateException();
 		}
 	}
+
 
 }

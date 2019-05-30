@@ -37,11 +37,11 @@ public class EarlyReservedChargingStrategy implements ChargingStrategy {
     public ChargerPathPair charging(Vehicle vehicle, double time) {
         ChargerPathPair bestLink = null;
         double bestTime = Double.MAX_VALUE;
-        for (Charger charger : chargerManager.getChargers().values()){
+        for (Charger charger : chargerManager.getChargers(vehicle.getCapacity()).values()){
             Link link = charger.getLink();
             VrpPathWithTravelData path = VrpPaths.calcAndCreatePath(((DrtStayTask)vehicle.getSchedule().getCurrentTask()).getLink(), link, time, router, travelTime);
             double travelTime = path.getTravelTime();
-            if (time + travelTime < charger.getEndTime()) {
+            if (time + travelTime < charger.getEndTime(time)) {
                 TimeChargerPair timeChargerPair = charger.calculateBestWaitTime(time + travelTime);
                 if (travelTime + timeChargerPair.waitTime < bestTime) {
                     bestLink = new ChargerPathPair(charger, path);

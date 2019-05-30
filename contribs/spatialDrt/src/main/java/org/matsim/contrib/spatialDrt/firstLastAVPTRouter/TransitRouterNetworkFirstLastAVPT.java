@@ -46,9 +46,6 @@ import java.util.*;
 public final class TransitRouterNetworkFirstLastAVPT implements Network {
 
 	private final static Logger log = Logger.getLogger(TransitRouterNetworkFirstLastAVPT.class);
-	public static final double maxBeelineAVConnectionDistance = 2000;
-	public static final double maxBeelineWalkConnectionDistance = 800;
-
 
 	private final Map<Id<Link>, TransitRouterNetworkLink> links = new LinkedHashMap<>();
 	private final Map<Id<Node>, TransitRouterNetworkNode> nodes = new LinkedHashMap<>();
@@ -330,7 +327,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 		double maxX = Double.NEGATIVE_INFINITY;
 		double maxY = Double.NEGATIVE_INFINITY;
 		for (TransitRouterNetworkNode node : getNodes().values())
-			if(node.line == null) {
+			if(node.line == null && node.route == null) {
 				Coord c = node.stop.getCoord();
 				if (c.getX() < minX)
 					minX = c.getX();
@@ -343,7 +340,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 			}
 		QuadTree<TransitRouterNetworkNode> quadTree = new QuadTree<TransitRouterNetworkNode>(minX, minY, maxX, maxY);
 		for (TransitRouterNetworkNode node : getNodes().values()) {
-			if(node.line == null) {
+			if(node.line == null && node.route == null) {
 				Coord c = node.stop.getCoord();
 				quadTree.put(c.getX(), c.getY(), node);
 			}
@@ -354,7 +351,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 		maxX = Double.NEGATIVE_INFINITY;
 		maxY = Double.NEGATIVE_INFINITY;
 		for (TransitRouterNetworkNode node : getNodes().values())
-			if(node.line == null && node.stop.getStopAreaId()!=null && node.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class))) {
+			if(node.line == null && node.route == null && node.stop.getStopAreaId()!=null && node.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class))) {
 				Coord c = node.stop.getCoord();
 				if (c.getX() < minX)
 					minX = c.getX();
@@ -367,7 +364,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 			}
 		quadTree = new QuadTree<>(minX, minY, maxX, maxY);
 		for (TransitRouterNetworkNode node : getNodes().values()) {
-			if(node.line == null && node.stop.getStopAreaId()!=null && node.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class))) {
+			if(node.line == null  && node.route == null && node.stop.getStopAreaId()!=null && node.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class))) {
 				Coord c = node.stop.getCoord();
 				quadTree.put(c.getX(), c.getY(), node);
 			}
@@ -417,7 +414,7 @@ public final class TransitRouterNetworkFirstLastAVPT implements Network {
 			Map<TransitRouterNetworkNode, Map<TransitRouterNetworkNode, TransitRouterNetworkNode>> nodesSRAV = new HashMap<>();
 			for(TransitRouterNetworkNode node : transitNetwork.getNodes().values())
 				if(node.stop.getStopAreaId()!=null && node.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class)))
-					for(TransitRouterNetworkNode node2 : transitNetwork.getNearestNodes(node.stop.getCoord(), maxBeelineAVConnectionDistance))
+					for(TransitRouterNetworkNode node2 : transitNetwork.getNearestNodes(node.stop.getCoord(), TransitRouterParams.maxBeelineAVConnectionDistance))
 						if (!node.getCoord().equals(node2.getCoord()))
 							if (node2.stop.getStopAreaId()!=null && node2.stop.getStopAreaId().equals(Id.create("mp", TransitStopArea.class))) {
 								Id<Node> id = Id.createNodeId(node2.stop.getId().toString() + "t");

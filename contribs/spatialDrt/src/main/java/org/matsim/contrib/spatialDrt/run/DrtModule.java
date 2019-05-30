@@ -71,6 +71,7 @@ DrtModule extends AbstractModule {
 		if (atodCfg.isEAV()) {
 			this.bind(DischargingRate.class).asEagerSingleton();
 			this.bind(ChargerManager.class).to(SimpleChargerManager.class).asEagerSingleton();
+			this.addControlerListenerBinding().to(ChargerManager.class).asEagerSingleton();
 		}
 
 

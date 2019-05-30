@@ -75,9 +75,9 @@ public class EmptyVehicleRelocator {
 	private void relocateVehicleImpl(Vehicle vehicle, VrpPathWithTravelData vrpPath) {
 		Schedule schedule = vehicle.getSchedule();
 		DrtStayTask stayTask = (DrtStayTask)schedule.getCurrentTask();
-		if (stayTask.getTaskIdx() != schedule.getTaskCount() - 1) {
-			throw new IllegalStateException("The current STAY task is not last. Not possible without prebooking");
-		}
+//		if (stayTask.getTaskIdx() != schedule.getTaskCount() - 1) {
+//			throw new IllegalStateException("The current STAY task is not last. Not possible without prebooking");
+//		}
 
 		stayTask.setEndTime(vrpPath.getDepartureTime()); // finish STAY
 		schedule.addTask(taskFactory.createDriveTask(vehicle, vrpPath)); // add DRIVE

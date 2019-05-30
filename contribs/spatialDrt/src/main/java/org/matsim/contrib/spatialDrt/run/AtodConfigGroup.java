@@ -19,6 +19,7 @@
 
 package org.matsim.contrib.spatialDrt.run;
 
+import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.TransitRouterNetworkFirstLastAVPT;
 import org.matsim.contrib.spatialDrt.parkingStrategy.ParkingStrategy;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
@@ -55,10 +56,6 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 	public static final String PARKING_STRATEGY = "parkingStrategy";
 	static final String PARKING = "Paring strategies, alwaysRoaming, parkingOntheRoad, parkingInDepot, MixedParking";
 
-	public static final String DEPOT_FILE = "depotFile";
-	static final String DEPOT_FILE_EXP = "An XML file specifying the location of depots. The file format according to depot.dtd";
-
-
 	public static final String DOOR_2_DOOR_STOP = "door2DoorStop";
 	static final String DOOR_2_DOOR_STOP_EXP = "The bay length of the door-to-door AV, infinity means no bay length restriction, linkLength means length equals to the link length";
 
@@ -83,13 +80,13 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 	public static final String BAY_MODE = "bayMode";
 	static final String BAY_MODE_EXP = "Type of infrastructure for dwelling";
 
+	public static final String ROUTING_OPTION = "routingOption";
+	static final String ROUTING_OPTION_EXP = "PT,PT_TAXI,PT_AV,AV, PT: only bus, PT_TAXI: bus and drtaxi, PT_AV: bus, drt and drtaxi";
+
 
 
 	@NotNull
 	private ParkingStrategy.Strategies parkingStrategy = ParkingStrategy.Strategies.noParkingStrategy;
-
-	@NotNull
-	private String depotFile = null;
 
 	@NotNull
 	private Door2DoorStop door2DoorStop= Door2DoorStop.infinity;
@@ -104,6 +101,8 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 
 	private BayMode bayMode;
 
+	private TransitRouterNetworkFirstLastAVPT.NetworkModes routingMode;
+
 
 
 
@@ -111,7 +110,6 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 	public Map<String, String> getComments() {
 		Map<String, String> map = super.getComments();
 		map.put(PARKING_STRATEGY, PARKING);
-		map.put(DEPOT_FILE, DEPOT_FILE_EXP);
 		map.put(DOOR_2_DOOR_STOP, DOOR_2_DOOR_STOP_EXP);
 		map.put(MIN_BAY_SIZE, MIN_BAY_SIZE_EXP);
 		map.put(CHARGE_FILE, CHARGE_FILE_EXP);
@@ -120,32 +118,10 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 		map.put(MIN_REQUEST_ACCEPT, MIN_REQUEST_ACCEPT_EXP);
 		map.put(EAV, EAV_EXP);
 		map.put(BAY_MODE, BAY_MODE_EXP);
+		map.put(ROUTING_OPTION, ROUTING_OPTION_EXP);
 		return map;
 	}
 
-		/**
-	 *
-	 * @return -- {@value #DEPOT_FILE_EXP}
-	 */
-	@StringGetter(DEPOT_FILE)
-	public String getDepotFile() {
-		return depotFile;
-	}
-	/**
-	 *
-	 * @param depotFile -- {@value #DEPOT_FILE_EXP}
-	 */
-	@StringSetter(DEPOT_FILE)
-	public void setDepotFile(String depotFile) {
-		this.depotFile = depotFile;
-	}
-	/**
-	 *
-	 * @return -- {@value #DEPOT_FILE_EXP}
-	 */
-	public URL getDepotFileUrl(URL context) {
-		return ConfigGroup.getInputFileURL(context, this.depotFile);
-	}
 
 	/**
 	 *
@@ -165,6 +141,22 @@ public class AtodConfigGroup extends ReflectiveConfigGroup {
 
 		this.parkingStrategy = ParkingStrategy.Strategies.valueOf(parkingStrategy);
 	}
+
+	@StringGetter(ROUTING_OPTION)
+	public TransitRouterNetworkFirstLastAVPT.NetworkModes getRoutingOption() {
+		return routingMode;
+	}
+
+	/**
+	 *
+	 * @param routingMode -- {@value #PARKING}
+	 */
+	@StringSetter(ROUTING_OPTION)
+	public void setRoutingOption(String routingMode) {
+
+		this.routingMode = TransitRouterNetworkFirstLastAVPT.NetworkModes.valueOf(routingMode);
+	}
+
 
 
 	@StringGetter(DOOR_2_DOOR_STOP)

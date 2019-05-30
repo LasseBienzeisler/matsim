@@ -4,13 +4,16 @@ package org.matsim.contrib.spatialDrt.eav;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
+import org.matsim.facilities.ActivityFacility;
+import org.matsim.facilities.ActivityOption;
 
 
 public class Level2Charger extends Charger {
-    public static final double CHARGING_RATE_PER_SECOND =  8.0/75.0/60.0;
+    public static final double CHARGING_RATE_PER_SECOND =  90.0/5.0/3600.0;
+    static String activityType = "level2";
 
-    public Level2Charger(Id<Charger> id, Link link, int capacity, double startTime, double endTime, boolean isBlocking) {
-        super(id, link, capacity, startTime, endTime, isBlocking);
+    public Level2Charger(Id<ActivityFacility> id, Link link, int capacity, ActivityOption activityOption, boolean isBlocking) {
+        super(id, link,  activityOption,capacity, isBlocking);
     }
 
     @Override

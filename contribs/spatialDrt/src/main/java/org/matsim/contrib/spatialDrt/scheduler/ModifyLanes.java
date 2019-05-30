@@ -67,9 +67,6 @@ public class ModifyLanes {
 //    }
 
     public void modifyLanes(Id<Link> linkId, double time, double change){
-        if (linkId.toString().equals("mpla_53") && time != 36000 && change == 0){
-            System.out.println();
-        }
         Link currentLink = network.getLinks().get(linkId);
         double numOfLanes = currentLink.getNumberOfLanes();
         if ((change == 0 && currentLink.getCapacity() != currentLink.getCapacity(time)) || (change != 0 && currentLink.getCapacity() == currentLink.getCapacity(time)) ) {

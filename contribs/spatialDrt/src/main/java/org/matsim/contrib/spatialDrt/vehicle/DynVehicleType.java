@@ -14,16 +14,19 @@ public class DynVehicleType extends VehicleTypeImpl {
 
     private double maxBatteryMeter;
 
+    private String mode;
 
 
 
-    public DynVehicleType(Id<VehicleType> id, int seats, double accessTime, double egressTime){
+
+    public DynVehicleType(Id<VehicleType> id, int seats, double accessTime, double egressTime, String mode){
         super(id);
         VehicleCapacity capacity = new VehicleCapacityImpl();
         capacity.setSeats(Integer.valueOf(seats));
         setCapacity(capacity);
         setAccessTime(accessTime);
         setEgressTime(egressTime);
+        setMode(mode);
     }
 
 
@@ -40,7 +43,7 @@ public class DynVehicleType extends VehicleTypeImpl {
     }
 
     public static DynVehicleType defaultDynVehicleType(Id<VehicleType> id){
-        return new DynVehicleType(id, 0, 0.0,0.0);
+        return new DynVehicleType(id, 0, 0.0,0.0, null);
     }
 
     public void setMaxBatteryMeter(double maxBatteryMeter) {
@@ -55,4 +58,11 @@ public class DynVehicleType extends VehicleTypeImpl {
         return batteryCapacity / maxBatteryMeter;
     }
 
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getMode() {
+        return mode;
+    }
 }

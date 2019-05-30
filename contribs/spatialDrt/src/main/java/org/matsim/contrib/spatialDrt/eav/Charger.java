@@ -1,23 +1,27 @@
 package org.matsim.contrib.spatialDrt.eav;
 
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.data.Vehicle;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
+import org.matsim.facilities.ActivityFacility;
+import org.matsim.facilities.ActivityOption;
+import org.matsim.facilities.OpeningTime;
+import org.matsim.utils.objectattributes.attributable.Attributes;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-public abstract class Charger {
-
-    private Id<Charger> id;
+public abstract class Charger implements ActivityFacility {
+    private Id<ActivityFacility> id;
     private Link link;
     private int capacity;
 
-    private double startTime;
-    private double endTime;
+    ActivityOption activityOption;
     private boolean isBlocking;
     private ArrayList<VehicleImpl> chargingVehicles = new ArrayList<>();
     private Queue<VehicleImpl> waitingVehicles = new ConcurrentLinkedQueue<>();
@@ -26,12 +30,11 @@ public abstract class Charger {
     private boolean firstStart = true;
 
 
-    public Charger(Id<Charger> id, Link link, int capacity, double startTime, double endTime, boolean isBlocking){
+    public Charger(Id<ActivityFacility> id, Link link, ActivityOption activityOption,int capacity, boolean isBlocking){
         this.id = id;
         this.link = link;
         this.capacity = capacity;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.activityOption = activityOption;
         this.isBlocking = isBlocking;
     }
 
@@ -58,7 +61,16 @@ public abstract class Charger {
     }
 
     public boolean isOpen(double now){
-        return now >= startTime;
+        for (OpeningTime openingTime: activityOption.getOpeningTimes()){
+            if (now <= openingTime.getEndTime()){
+                if (now >= openingTime.getStartTime()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -103,6 +115,8 @@ public abstract class Charger {
     public void clear() {
         waitingVehicles.clear();
         chargingVehicles.clear();
+        chargerAvailableTime.clear();
+        waitingForOpenVehicles.clear();
     }
 
 
@@ -118,18 +132,18 @@ public abstract class Charger {
 
     public TimeChargerPair calculateBestWaitTime( double arrivalTime) {
         TimeChargerPair best = new TimeChargerPair(Double.MAX_VALUE, this);
-        if (checkChargerAvailability()) {
+        if (checkChargerAvailability(arrivalTime)) {
             if (chargerAvailableTime.size() < capacity) {
-                best.waitTime = Double.max(0, startTime - arrivalTime);
+                best.waitTime = Double.max(0, getStartTime(arrivalTime) - arrivalTime);
             } else {
-                best.waitTime = Double.max(Double.max(0, startTime - arrivalTime), chargerAvailableTime.peek() - arrivalTime);
+                best.waitTime = Double.max(Double.max(0, getStartTime(arrivalTime) - arrivalTime), chargerAvailableTime.peek() - arrivalTime);
             }
         }
         return best;
     }
 
-    public boolean checkChargerAvailability(){
-        return chargerAvailableTime.peek() == null?true:chargerAvailableTime.peek() <= endTime;
+    public boolean checkChargerAvailability(double arrivalTime){
+        return chargerAvailableTime.peek() == null?true:chargerAvailableTime.peek() <= getCloseTime();
     }
 
 
@@ -143,20 +157,20 @@ public abstract class Charger {
         if (chargingVehicles.contains(vehicle)){
             return;
         }
-        if (now == startTime && waitingForOpenVehicles.contains(vehicle.getId())){
+        if (now == getStartTime(now) && waitingForOpenVehicles.contains(vehicle.getId())){
             waitingForOpenVehicles.remove(vehicle.getId());
             if (firstStart){
                 chargerAvailableTime.clear();
                 firstStart = false;
             }
         }
-        if (now < startTime ){
+        if (now < getStartTime(now) ){
             if (!waitingForOpenVehicles.contains(vehicle.getId())) {
                 if (chargerAvailableTime.size() == capacity) {
                     double time = chargerAvailableTime.poll() + getChargingTime(vehicle);
                     chargerAvailableTime.add(time);
                 } else {
-                    chargerAvailableTime.add(startTime + getChargingTime(vehicle));
+                    chargerAvailableTime.add(getStartTime(now) + getChargingTime(vehicle));
                 }
                 waitingForOpenVehicles.add(vehicle.getId());
             }
@@ -175,16 +189,65 @@ public abstract class Charger {
     }
 
 
-    public Id<Charger> getId() {
+    public Id<ActivityFacility> getId() {
         return id;
     }
 
-    public double getStartTime() {
-        return startTime;
+    public double getStartTime(double now) {
+        for (OpeningTime openingTime: activityOption.getOpeningTimes()){
+            if (now <= openingTime.getEndTime()){
+                return openingTime.getStartTime();
+            }
+        }
+        return Double.MAX_VALUE;
     }
 
-    public double getEndTime() {
-        return endTime;
+    public double getEndTime(double now) {
+        for (OpeningTime openingTime: activityOption.getOpeningTimes()){
+            if (now <= openingTime.getEndTime()){
+                return openingTime.getEndTime();
+            }
+        }
+        return Double.MAX_VALUE;
+    }
+
+    public double getCloseTime(){
+        return activityOption.getOpeningTimes().last().getEndTime();
+    }
+
+    @Override
+    public Map<String, ActivityOption> getActivityOptions() {
+        return null;
+    }
+
+    @Override
+    public void addActivityOption(ActivityOption option) {
+
+    }
+
+    @Override
+    public void setCoord(Coord coord) {
+
+    }
+
+    @Override
+    public Id<Link> getLinkId() {
+        return null;
+    }
+
+    @Override
+    public Coord getCoord() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getCustomAttributes() {
+        return null;
+    }
+
+    @Override
+    public Attributes getAttributes() {
+        return null;
     }
 }
 

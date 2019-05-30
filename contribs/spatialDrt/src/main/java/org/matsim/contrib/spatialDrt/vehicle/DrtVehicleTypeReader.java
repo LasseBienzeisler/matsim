@@ -37,12 +37,13 @@ public class DrtVehicleTypeReader extends MatsimXmlParser {
     private DynVehicleType createVehicleType(Attributes atts) {
         Id<VehicleType> id = Id.create(atts.getValue("id"), VehicleType.class);
         int seats = ReaderUtils.getInt(atts, "seats", DEFAULT_CAPACITY);
+        String mode = ReaderUtils.getString(atts, "mode",null);
         double batteryCapacity = ReaderUtils.getDouble(atts, "battery", Double.MAX_VALUE);
         double maxBatteryMeter = ReaderUtils.getDouble(atts, "max_battery_km", Double.MAX_VALUE) * 1000;
         double length = ReaderUtils.getDouble(atts,"length",7.5);
         double access_time = ReaderUtils.getDouble(atts, "boarding_time", DEFAULT_BOARDING);
         double egress_time = ReaderUtils.getDouble(atts, "alighting_time", DEFAULT_ALIGHTING);
-        DynVehicleType dynVehicleType = new DynVehicleType(id, seats, access_time, egress_time);
+        DynVehicleType dynVehicleType = new DynVehicleType(id, seats, access_time, egress_time, mode);
         dynVehicleType.setBatteryCapacity(batteryCapacity);
         dynVehicleType.setLength(length);
         dynVehicleType.setMaxBatteryMeter(maxBatteryMeter);

@@ -1,15 +1,22 @@
 package org.matsim.contrib.spatialDrt.eav;
 
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.spatialDrt.schedule.VehicleImpl;
 import org.matsim.contrib.spatialDrt.vehicle.DynVehicleType;
+import org.matsim.facilities.ActivityFacility;
+import org.matsim.facilities.ActivityOption;
+import org.matsim.utils.objectattributes.attributable.Attributes;
+
+import java.util.Map;
 
 public class FastCharger extends Charger {
     public static final double CHARGING_RATE_PER_SECOND =  0.8/60.0;
+    static String activityType = "fast";
 
-    public FastCharger(Id<Charger> id, Link link, int capacity, double startTime, double endTime, boolean isBlocking) {
-        super(id, link, capacity,startTime,endTime, isBlocking);
+    public FastCharger(Id<ActivityFacility> id, Link link, int capacity, ActivityOption activityOption, boolean isBlocking) {
+        super(id, link,activityOption, capacity, isBlocking);
     }
 
     @Override
@@ -32,4 +39,6 @@ public class FastCharger extends Charger {
     public ChargerMode getChargerMode() {
         return ChargerMode.fast;
     }
+
+
 }

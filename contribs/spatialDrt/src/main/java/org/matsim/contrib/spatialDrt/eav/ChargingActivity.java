@@ -13,10 +13,10 @@ public class ChargingActivity extends AbstractDynActivity {
     public ChargingActivity(String activityType, DrtChargeTask task, Charger charger, Vehicle vehicle) {
         super(activityType);
         double chargingTime = charger.getChargingTime((VehicleImpl) vehicle);
-        if (task.getBeginTime() + chargingTime > charger.getEndTime()){
-            vehicle.getSchedule().getTasks().get(task.getTaskIdx() + 1).setBeginTime(charger.getEndTime());
+        if (task.getBeginTime() + chargingTime > charger.getEndTime(task.getBeginTime())){
+            vehicle.getSchedule().getTasks().get(task.getTaskIdx() + 1).setBeginTime(charger.getEndTime(task.getBeginTime()));
         }
-        this.endTime = Double.min(task.getBeginTime() + chargingTime, charger.getEndTime());
+        this.endTime = Double.min(task.getBeginTime() + chargingTime, charger.getEndTime(task.getBeginTime()));
         task.setEndTime(endTime);
         this.vehicle = (VehicleImpl) vehicle;
         this.vehicle.changeStatus(false);

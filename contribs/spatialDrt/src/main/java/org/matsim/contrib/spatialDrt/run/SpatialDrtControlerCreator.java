@@ -30,6 +30,9 @@ import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.events.Event;
+import org.matsim.api.core.v01.population.Population;
+import org.matsim.contrib.common.diversitygeneration.planselectors.DiversityGeneratingPlansRemover;
 import org.matsim.contrib.drt.optimizer.DrtOptimizer;
 import org.matsim.contrib.drt.optimizer.insertion.ParallelPathDataProvider;
 import org.matsim.contrib.drt.routing.DrtRoute;
@@ -49,16 +52,20 @@ import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.stopStopTimes.StopStopT
 import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitLinkTime.WaitLinkTimeCalculatorAV;
 import org.matsim.contrib.spatialDrt.firstLastAVPTRouter.waitTimes.WaitTimeCalculatorAV;
 import org.matsim.contrib.spatialDrt.parkingAnalysis.DrtAnalysisModule;
+import org.matsim.contrib.spatialDrt.parkingStrategy.ParkingStrategy;
 import org.matsim.contrib.spatialDrt.parkingStrategy.alwaysRoaming.zoneBasedRoaming.DrtZonalModule;
 import org.matsim.contrib.spatialDrt.parkingStrategy.insertionOptimizer.DefaultUnplannedRequestInserter;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ActivityParams;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ModeParams;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
+import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.population.io.PopulationReader;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -115,6 +122,13 @@ public final class SpatialDrtControlerCreator {
 		adjustDrtConfig(config);
 		Scenario scenario = scenarioLoader.apply(config);
 		Controler controler = new Controler(scenario);
+//		String ITER = "40";
+//		String FOLDER = "/home/biyu/IdeaProjects/matsim-spatialDRT/output/mix_20190416/demand_bay_noav/ITERS/" ;
+//
+//		String PlANSFILE = FOLDER + "it." + ITER + "/" + ITER + ".plans.xml.gz";
+//		Scenario fakeScenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
+//		new PopulationReader(fakeScenario).readFile(PlANSFILE);
+
 		final WaitTimeStuckCalculator waitTimeCalculator = new WaitTimeStuckCalculator(scenario.getPopulation(), scenario.getTransitSchedule(), scenario.getConfig().travelTimeCalculator().getTraveltimeBinSize(), (int) (scenario.getConfig().qsim().getEndTime()-scenario.getConfig().qsim().getStartTime()));
 		controler.getEvents().addHandler(waitTimeCalculator);
 		final WaitTimeCalculatorAV waitTimeCalculatorAV = new WaitTimeCalculatorAV(scenario.getPopulation(), scenario.getTransitSchedule(), scenario.getConfig().travelTimeCalculator().getTraveltimeBinSize(), (int) (scenario.getConfig().qsim().getEndTime()-scenario.getConfig().qsim().getStartTime()));
@@ -129,6 +143,16 @@ public final class SpatialDrtControlerCreator {
 		controler.getEvents().addHandler(linkLinkTimeCalculatorAV);
 		final TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(scenario.getNetwork(), scenario.getConfig().travelTimeCalculator());
 
+
+//		String EVENTSFILE = FOLDER + "it." + ITER + "/" + ITER + ".events.xml.gz";
+		EventsManager eventsManager = EventsUtils.createEventsManager();
+		eventsManager.addHandler(waitTimeCalculator);
+		eventsManager.addHandler(waitTimeCalculatorAV);
+		eventsManager.addHandler(waitLinkTimeCalculatorAV);
+		eventsManager.addHandler(stopStopTimeCalculator);
+		eventsManager.addHandler(stopStopTimeCalculatorAV);
+		eventsManager.addHandler(linkLinkTimeCalculatorAV);
+
 		addDrtAsSingleDvrpModeToControler(controler);
 		if (otfvis) {
 			controler.addOverridingModule(new OTFVisLiveModule());
@@ -138,7 +162,11 @@ public final class SpatialDrtControlerCreator {
 			public void install() {
 				addTravelTimeBinding(DvrpTravelTimeModule.DVRP_INITIAL).toInstance(travelTimeCalculator.getLinkTravelTimes());
 				bind(MainModeIdentifier.class).toInstance(new MainModeIdentifierFirstLastAVPT(new HashSet<>(Arrays.asList("pvt","taxi","walk"))));
-				addRoutingModuleBinding("pt").toProvider(new TransitRouterFirstLastAVPTFactory(scenario, waitTimeCalculator.get(), waitTimeCalculatorAV.get(), waitLinkTimeCalculatorAV.get(), stopStopTimeCalculator.get(), stopStopTimeCalculatorAV.get(), linkLinkTimeCalculatorAV.get(), TransitRouterNetworkFirstLastAVPT.NetworkModes.PT_AV));
+				AtodConfigGroup atodConfigGroup = AtodConfigGroup.get(config);
+				addRoutingModuleBinding("pt").toProvider(new TransitRouterFirstLastAVPTFactory(scenario, waitTimeCalculator.get(), waitTimeCalculatorAV.get(), waitLinkTimeCalculatorAV.get(), stopStopTimeCalculator.get(), stopStopTimeCalculatorAV.get(), linkLinkTimeCalculatorAV.get(), atodConfigGroup.getRoutingOption()));
+				if (scenario.getConfig().strategy().getPlanSelectorForRemoval().equals("DiversityGeneratingPlansRemover")) {
+					bindPlanSelectorForRemoval().toProvider(DiversityGeneratingPlansRemover.Builder.class);
+				}
 			}
 
 		});
@@ -153,7 +181,9 @@ public final class SpatialDrtControlerCreator {
 	}
 
 	public static void addDrtWithoutDvrpModuleToControler(Controler controler) {
-		controler.addOverridingModule(new DrtZonalModule());
+		if (AtodConfigGroup.get(controler.getConfig()).getParkingStrategy().equals(ParkingStrategy.Strategies.alwaysRoaming)) {
+			controler.addOverridingModule(new DrtZonalModule());
+		}
 		controler.addQSimModule(new DrtQSimModule());
 		controler.addOverridingModule(new DrtModule());
 		controler.addOverridingModule(new DrtAnalysisModule());

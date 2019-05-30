@@ -100,10 +100,11 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
 
         // this is what we want to minimise
         double totalTimeLoss = pickupDetourTimeLoss + dropoffDetourTimeLoss;
+        if (!areConstraintsSatisfied(drtRequest, vEntry, insertion, pickupDetourTimeLoss, totalTimeLoss)) {
+            return INFEASIBLE_SOLUTION_COST;
+        }
 
-        boolean constraintsSatisfied = areConstraintsSatisfied(drtRequest, vEntry, insertion, pickupDetourTimeLoss,
-                totalTimeLoss);
-        return constraintsSatisfied ? totalTimeLoss + calcSoftConstraintPenalty(drtRequest, vEntry, insertion, pickupDetourTimeLoss) : INFEASIBLE_SOLUTION_COST;
+        return totalTimeLoss + calcSoftConstraintPenalty(drtRequest, vEntry, insertion, pickupDetourTimeLoss);
     }
 
     private double calcSoftConstraintPenalty(DrtRequest drtRequest, VehicleData.Entry vEntry,
@@ -195,35 +196,34 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
 
             Task currentTask = vEntry.vehicle.getSchedule().getCurrentTask();
             //synchronized (drive) {
-        if (insertion instanceof InsertionWithPathData) {
-            Double drive = 0.0;
-            if (currentTask instanceof StayTaskImpl) {
-                drive = drive + ((StayTaskImpl) currentTask).getLink().getLength();
-            }
-            for (int i = vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx(); i < vEntry.vehicle.getSchedule().getTasks().size(); i++) {
-                Task drtTask = vEntry.vehicle.getSchedule().getTasks().get(i);
-                if (drtTask instanceof DrtDriveTask) {
-                    drive = drive + VrpPaths.calcDistance(((DrtDriveTask) drtTask).getPath());
-                }
-            }
-            drive = drive + ((InsertionWithPathData) insertion).getPathToPickup().getPathDistance() + ((InsertionWithPathData) insertion).getPathFromPickup().getPathDistance() +
-                    (insertion.getDropoffIdx() == insertion.getPickupIdx() ? 0 : ((InsertionWithPathData) insertion).getPathToDropoff().getPathDistance()) +
-                    (insertion.getDropoffIdx() == vEntry.stops.size() ? 0 : ((InsertionWithPathData) insertion).getPathFromDropoff().getPathDistance());
-            //}
-            double estimatedBatteryAfterAccept = (((VehicleImpl) vEntry.vehicle).getBattery() - DischargingRate.calculateDischargeByDistance(drive, ((VehicleImpl) vEntry.vehicle).getVehicleType().getId()));
-            if (estimatedBatteryAfterAccept <= DischargingRate.getMinAccepted(((VehicleImpl) vEntry.vehicle).getVehicleType().getId())) {
-                return false;
-            }
-        }
-        boolean test = false;
-//        if (currentTask instanceof DrtStayTask && currentTask.equals(lastTask)){
-////            return true; // idle vehicles always satisfy the contraints
+//        if (insertion instanceof InsertionWithPathData) {
+//            Double drive = 0.0;
+//            if (currentTask instanceof StayTaskImpl) {
+//                drive = drive + ((StayTaskImpl) currentTask).getLink().getLength();
+//            }
+//            for (int i = vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx(); i < vEntry.vehicle.getSchedule().getTasks().size(); i++) {
+//                Task drtTask = vEntry.vehicle.getSchedule().getTasks().get(i);
+//                if (drtTask instanceof DrtDriveTask) {
+//                    drive = drive + VrpPaths.calcDistance(((DrtDriveTask) drtTask).getPath());
+//                }
+//            }
+//            drive = drive + ((InsertionWithPathData) insertion).getPathToPickup().getPathDistance() + ((InsertionWithPathData) insertion).getPathFromPickup().getPathDistance() +
+//                    (insertion.getDropoffIdx() == insertion.getPickupIdx() ? 0 : ((InsertionWithPathData) insertion).getPathToDropoff().getPathDistance()) +
+//                    (insertion.getDropoffIdx() == vEntry.stops.size() ? 0 : ((InsertionWithPathData) insertion).getPathFromDropoff().getPathDistance());
+//            //}
+//            double estimatedBatteryAfterAccept = (((VehicleImpl) vEntry.vehicle).getBattery() - DischargingRate.calculateDischargeByDistance(drive, ((VehicleImpl) vEntry.vehicle).getVehicleType().getId()));
+//            if (estimatedBatteryAfterAccept <= DischargingRate.getMinAccepted(((VehicleImpl) vEntry.vehicle).getVehicleType().getId())) {
+//                return false;
+//            }
 //        }
+
+        if (currentTask instanceof DrtStayTask && currentTask.equals(lastTask)){
+            return true; // idle vehicles always satisfy the contraints
+        }
         if (!currentTask.equals(lastTask)) {
             Task nextTask = vEntry.vehicle.getSchedule().getTasks().get(vEntry.vehicle.getSchedule().getCurrentTask().getTaskIdx() + 1);
             if (currentTask instanceof DrtDriveTask && nextTask instanceof DrtStayTask) {
-                test = true;
-                //return true; // vehicles coming back to depot always satisfy the contraints
+                return true; // vehicles coming back to depot always satisfy the contraints
             }
         }
         for (int s = insertion.getPickupIdx(); s < insertion.getDropoffIdx(); s++) {
@@ -231,9 +231,6 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
             // all stops after pickup are delayed by pickupDetourTimeLoss
             if (stop.task.getBeginTime() + pickupDetourTimeLoss > stop.maxArrivalTime //
                     || stop.task.getEndTime() + pickupDetourTimeLoss > stop.maxDepartureTime) {
-                if (test){
-                    System.out.println();
-                }
                 return false;
             }
         }
@@ -244,9 +241,6 @@ public class SpatialDrtInsertionCostCalculater implements InsertionCostCalculato
             // all stops after dropoff are delayed by totalTimeLoss
             if (stop.task.getBeginTime() + totalTimeLoss > stop.maxArrivalTime //
                     || stop.task.getEndTime() + totalTimeLoss > stop.maxDepartureTime) {
-                if (test){
-                    System.out.println();
-                }
                 return false;
             }
         }
